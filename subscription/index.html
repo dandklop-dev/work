@@ -49,6 +49,7 @@
 }
 
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 
 body{
   background:var(--page-bg);
@@ -71,16 +72,24 @@ body{
 
 /* ============ phone ============ */
 .phone{
-  width:100%;max-width:375px;
+  /* пропорции реального экрана 375×812 — ширина выводится из высоты */
+  aspect-ratio:375 / 812;
+  width:auto;
+  max-width:100%;
+  height:min(812px, calc(100vh - 170px));
+  height:min(812px, calc(100dvh - 170px));
+  min-height:600px;
   background:var(--bg-secondary);
   border-radius:30px;
   border:1px solid var(--page-rule);
   box-shadow:0 24px 60px -30px rgba(20,24,32,.45),0 2px 8px -4px rgba(20,24,32,.22);
   overflow:hidden;display:flex;flex-direction:column;
-  height:min(812px,84vh);min-height:600px;
   color:var(--text-primary);
   font-size:15px;line-height:22px;letter-spacing:-.02em;
   position:relative;
+}
+@media (max-width:560px){
+  .phone{aspect-ratio:auto;width:100%;height:min(760px,80dvh);min-height:0}
 }
 
 .statusbar{background:var(--bg-secondary);display:flex;justify-content:space-between;align-items:center;padding:12px 20px 2px;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
@@ -694,11 +703,11 @@ body{
       html += '<div class="prow"><span class="k">Букет «'+t.name+'»</span><span class="v">'+money(t.price)+'</span></div>';
       html += '<div class="prow"><span class="k">Доставок за '+durWord(S.dur)+'</span><span class="v">'+giftCount()+'</span></div>';
       if(disc > 0) html += '<div class="prow"><span class="k">Скидка за срок '+durWord(S.dur)+'</span><span class="v pos">−'+money(disc)+'</span></div>';
-      html += '<div class="charge"><span class="k">Спишем сейчас</span><span class="v">'+money(gross-disc)+'</span></div>';
+      html += '<div class="charge"><span class="k">Итого к оплате</span><span class="v">'+money(gross-disc)+'</span></div>';
       html += '<p class="capsm" style="margin-top:10px">Можно отменить и получить возврат за недоставленные букеты в любой момент.</p>';
     } else {
       html += '<div class="prow"><span class="k">Букет «'+t.name+'»</span><span class="v">'+money(t.price)+'</span></div>';
-      html += '<div class="charge"><span class="k">Спишем сейчас</span><span class="v">'+money(t.price)+'</span></div>';
+      html += '<div class="charge"><span class="k">Итого к оплате</span><span class="v">'+money(t.price)+'</span></div>';
       html += '<p class="capsm" style="margin-top:10px">Это оплата первой доставки. Дальше '+money(t.price)+' за каждую, '+f.short+' — списываем за день до доставки. Отменить можно в любой момент.</p>';
     }
     $("breakdown").innerHTML = html;
