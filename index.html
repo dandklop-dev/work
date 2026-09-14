@@ -1,0 +1,909 @@
+<title>Подписка на цветы — прототип</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+
+<style>
+/* ============ page chrome (theme-aware) ============ */
+:root{
+  --page-bg:#E9EBEF;
+  --page-surface:#FFFFFF;
+  --page-ink:#242A33;
+  --page-muted:#69717D;
+  --page-rule:#D9DCE2;
+  --page-accent:#D93C82;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --page-bg:#15171B;--page-surface:#1D2026;--page-ink:#E6E9EE;
+    --page-muted:#A0A8B4;--page-rule:#2C3039;--page-accent:#EE6BA1;
+  }
+}
+:root[data-theme="dark"]{
+  --page-bg:#15171B;--page-surface:#1D2026;--page-ink:#E6E9EE;
+  --page-muted:#A0A8B4;--page-rule:#2C3039;--page-accent:#EE6BA1;
+}
+
+/* ====== app tokens — Figma variables, RB · App · iOS + Android ====== */
+:root{
+  --bg-primary:#FFFFFF;
+  --bg-secondary:#F2F3F5;
+  --bg-accent:#D93C82;
+  --text-primary:#333333;
+  --text-secondary:#656D77;
+  --text-tertiary:#C0C6CE;
+  --text-accent:#D93C82;
+  --text-negative:#FE5752;
+  --text-positive:#34C759;
+  --text-inversed:#FFFFFF;
+  --icon-primary:#333333;
+  --icon-tertiary:#C0C6CE;
+  --stroke-primary:#D8DEE4;
+  --stroke-secondary:#ECF1F5;
+  --stroke-accent:#D93C82;
+  --accent-tint:#F7D8E6;
+  --r8:8px;
+  --r12:12px;
+  --elev0:0 2px 16px 0 rgba(110,117,126,.08);
+  /* type: title3 20/28·700 · title4 17/24·600 · headline 16/22 · body 15/22 · bodySmall 14/20 · caption 13/18 · captionSmall 12/14 · tracking −2% */
+}
+
+*{box-sizing:border-box}
+
+body{
+  background:var(--page-bg);
+  color:var(--page-ink);
+  font-family:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:14px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page{max-width:760px;margin:0 auto;padding-inline:20px;padding-block:32px 56px}
+
+.phead{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--page-rule)}
+.phead h1{font-size:clamp(20px,3.4vw,25px);font-weight:700;letter-spacing:-.01em;margin:0;line-height:1.2}
+.phead p{margin:7px 0 0;color:var(--page-muted);font-size:13.5px;max-width:60ch}
+.tbtn{font:inherit;font-size:12.5px;font-weight:500;background:var(--page-surface);color:var(--page-ink);border:1px solid var(--page-rule);border-radius:8px;padding:8px 13px;cursor:pointer;transition:border-color .15s,color .15s;white-space:nowrap}
+.tbtn:hover{border-color:var(--page-accent);color:var(--page-accent)}
+.tbtn:focus-visible{outline:2px solid var(--page-accent);outline-offset:2px}
+
+.stage{display:flex;justify-content:center;margin-top:30px}
+
+/* ============ phone ============ */
+.phone{
+  width:100%;max-width:375px;
+  background:var(--bg-secondary);
+  border-radius:30px;
+  border:1px solid var(--page-rule);
+  box-shadow:0 24px 60px -30px rgba(20,24,32,.45),0 2px 8px -4px rgba(20,24,32,.22);
+  overflow:hidden;display:flex;flex-direction:column;
+  height:min(812px,84vh);min-height:600px;
+  color:var(--text-primary);
+  font-size:15px;line-height:22px;letter-spacing:-.02em;
+  position:relative;
+}
+
+.statusbar{background:var(--bg-secondary);display:flex;justify-content:space-between;align-items:center;padding:12px 20px 2px;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.statusbar .sig{display:flex;gap:4px;align-items:flex-end;height:11px}
+.statusbar .sig i{width:3px;background:var(--icon-primary);border-radius:1px;display:block}
+.statusbar .sig i:nth-child(1){height:4px}.statusbar .sig i:nth-child(2){height:6px}
+.statusbar .sig i:nth-child(3){height:8px}.statusbar .sig i:nth-child(4){height:11px}
+.statusbar .bat{width:22px;height:11px;border:1px solid var(--icon-primary);border-radius:3px;position:relative}
+.statusbar .bat::after{content:"";position:absolute;inset:1.5px;background:var(--icon-primary);border-radius:1px}
+
+.appbar{background:var(--bg-secondary);display:grid;grid-template-columns:28px 1fr 28px;align-items:center;padding:6px 12px 8px;gap:6px}
+.appbar .ttl{text-align:center;font-size:17px;font-weight:600;line-height:24px}
+.appbar .sub{display:block;font-size:12px;font-weight:400;line-height:14px;color:var(--text-secondary);margin-top:1px}
+.iconbtn{width:28px;height:28px;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer;color:var(--icon-primary);border-radius:6px}
+.iconbtn:disabled{opacity:0;pointer-events:none}
+.iconbtn:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:-2px}
+
+.progress{display:flex;gap:4px;padding:2px 12px 8px;background:var(--bg-secondary)}
+.progress i{flex:1;height:2px;border-radius:1px;background:var(--stroke-secondary);display:block}
+.progress i.on{background:var(--bg-accent)}
+
+.viewport{flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg-secondary);scrollbar-width:thin}
+.screen{padding:4px 12px 16px;display:flex;flex-direction:column;gap:8px}
+.screen[hidden]{display:none}
+.screen.bare{padding:0}
+
+/* ============ primitives ============ */
+.card{background:var(--bg-primary);border-radius:var(--r12);padding:16px}
+.card.flush{padding:0;overflow:hidden}
+
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sec-t{font-size:17px;font-weight:600;line-height:24px;margin:0}
+.t3{font-size:20px;font-weight:700;line-height:28px;margin:0}
+.body{font-size:15px;font-weight:400;line-height:22px;margin:0}
+.cap{font-size:13px;font-weight:400;line-height:18px;color:var(--text-secondary);margin:0}
+.capsm{font-size:12px;font-weight:400;line-height:14px;color:var(--text-secondary);margin:0}
+.accent{color:var(--text-accent)}
+
+.link{background:none;border:0;padding:0;font:inherit;font-size:13px;line-height:18px;color:var(--text-accent);cursor:pointer}
+.link:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px;border-radius:4px}
+.req::after{content:" *";color:var(--text-negative)}
+
+.fld{display:flex;flex-direction:column;gap:6px}
+.inp{background:var(--bg-secondary);border-radius:var(--r12);min-height:44px;display:flex;align-items:center;padding:0 14px;font-size:15px;line-height:22px;color:var(--text-primary)}
+.inp.ph{color:var(--text-tertiary)}
+.inp .flag{width:22px;height:15px;border-radius:2px;background:linear-gradient(#fff 0 50%,#D93C82 50% 100%);border:1px solid var(--stroke-primary);margin-right:8px;flex:none}
+
+.navrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border:0;border-top:1px solid var(--stroke-secondary);width:100%;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;letter-spacing:-.02em}
+.navrow.first,.navrow:first-of-type{border-top:0}
+.navrow .k{font-size:15px;line-height:22px}
+.navrow .v{display:flex;align-items:center;gap:6px;font-size:15px;line-height:22px;color:var(--text-secondary);text-align:right}
+.navrow:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px;border-radius:6px}
+.chev{color:var(--icon-tertiary);flex:none}
+
+.toggle{width:44px;height:26px;border-radius:99px;background:#E3E6EB;position:relative;flex:none;border:0;padding:0;cursor:pointer;transition:background .18s}
+.toggle[aria-pressed="true"]{background:var(--bg-accent)}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:transform .18s}
+.toggle[aria-pressed="true"]::after{transform:translateX(18px)}
+.toggle:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px}
+
+.chk{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--stroke-primary);background:transparent;flex:none;display:grid;place-items:center;cursor:pointer;padding:0}
+.chk[aria-pressed="true"]{background:var(--bg-accent);border-color:var(--bg-accent)}
+.chk svg{opacity:0}
+.chk[aria-pressed="true"] svg{opacity:1}
+.chk:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px}
+
+.btn{width:100%;font:inherit;font-size:15px;font-weight:600;line-height:20px;letter-spacing:-.02em;color:var(--text-inversed);background:var(--bg-accent);border:0;border-radius:var(--r12);padding:14px 16px;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.92}
+.btn:disabled{background:var(--bg-secondary);color:var(--text-tertiary);cursor:default}
+.btn:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px}
+.btn.sec{background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--stroke-primary);font-weight:500}
+
+.sel{width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;background:var(--bg-primary);border:1px solid var(--stroke-secondary);border-radius:var(--r12);padding:14px;box-shadow:var(--elev0);transition:border-color .12s;letter-spacing:-.02em}
+.sel[aria-pressed="true"]{border-color:var(--stroke-accent)}
+.sel:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px}
+.sel.flush{padding:0;overflow:hidden}
+
+.seg{display:flex;background:var(--bg-secondary);border-radius:var(--r12);padding:3px;gap:3px}
+.seg button{flex:1;font:inherit;font-size:13px;font-weight:400;line-height:18px;letter-spacing:-.02em;border:0;border-radius:var(--r8);padding:9px 4px;cursor:pointer;background:transparent;color:var(--text-secondary);transition:background .15s,color .15s}
+.seg button[aria-pressed="true"]{background:var(--bg-primary);color:var(--text-primary);font-weight:600;box-shadow:var(--elev0)}
+.seg button:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:-2px}
+.seg button small{display:block;font-size:11px;line-height:13px;color:var(--text-positive);font-weight:600;margin-top:2px}
+
+.dates{display:flex;gap:8px}
+.dchip{flex:1;min-width:0;text-align:center;font:inherit;cursor:pointer;background:var(--bg-primary);border:1px solid var(--stroke-secondary);border-radius:var(--r12);padding:8px 2px;color:inherit;transition:border-color .12s}
+.dchip[aria-pressed="true"]{border-color:var(--stroke-accent)}
+.dchip[aria-pressed="true"] b{color:var(--text-accent)}
+.dchip:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px}
+.dchip em{display:block;font-style:normal;font-size:12px;line-height:14px;color:var(--text-secondary)}
+.dchip b{display:block;font-size:14px;font-weight:600;line-height:20px;margin-top:2px}
+
+.prow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:5px 0}
+.prow .k{font-size:14px;line-height:20px;color:var(--text-secondary)}
+.prow .v{font-size:14px;line-height:20px;font-variant-numeric:tabular-nums}
+.prow .v.pos{color:var(--text-positive)}
+.charge{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-top:14px;margin-top:9px;border-top:1px solid var(--stroke-secondary)}
+.charge .k{font-size:17px;font-weight:600;line-height:24px}
+.charge .v{font-size:20px;font-weight:700;line-height:28px;color:var(--text-accent);font-variant-numeric:tabular-nums}
+
+.sched .s{display:grid;grid-template-columns:18px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--stroke-secondary)}
+.sched .s:first-child{border-top:0}
+.sched .n{font-size:12px;line-height:14px;color:var(--text-tertiary);font-weight:600;font-variant-numeric:tabular-nums}
+.sched .d{font-size:14px;line-height:20px;font-weight:500}
+.sched .s.first .d{color:var(--text-accent)}
+.sched .p{font-size:13px;line-height:18px;color:var(--text-secondary);font-variant-numeric:tabular-nums}
+.sched .more{font-size:12px;line-height:14px;color:var(--text-secondary);padding-top:9px;border-top:1px solid var(--stroke-secondary)}
+
+.agree{display:flex;gap:10px;align-items:flex-start;padding:5px 0}
+.agree p{font-size:13px;line-height:18px;margin:0}
+
+.trust{display:flex;flex-direction:column;gap:10px}
+.trust div{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:22px}
+.trust svg{flex:none;margin-top:2px;color:var(--text-positive)}
+
+.how{display:flex;flex-direction:column;gap:14px}
+.how div{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:22px;color:var(--text-secondary)}
+.how svg{flex:none;margin-top:2px;color:var(--text-accent)}
+
+/* carousels */
+.marquee{overflow:hidden;width:100%}
+.mrow{display:flex;gap:6px;width:max-content;animation:slide 34s linear infinite}
+.mrow.rev{animation-direction:reverse}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mtile{width:86px;height:86px;border-radius:var(--r8);flex:none}
+
+/* bouquet art */
+.bouquet{border-radius:var(--r8);display:grid;place-items:center;overflow:hidden;flex:none;background:linear-gradient(150deg,var(--bq-bg1),var(--bq-bg2))}
+.bq{width:76%;height:76%;display:block}
+.t-mini{--bq1:#F8C2D7;--bq2:#E3699F;--bq-bg1:#FFF2F7;--bq-bg2:#FBDDEA}
+.t-standard{--bq1:#EE93B9;--bq2:#C22C6E;--bq-bg1:#FDEBF3;--bq-bg2:#F7D8E6}
+.t-premium{--bq1:#D79AE0;--bq2:#8E3FA8;--bq-bg1:#F6ECFA;--bq-bg2:#EBD9F2}
+.t-warm{--bq1:#F6B9A6;--bq2:#D2593A;--bq-bg1:#FEF1EC;--bq-bg2:#FADCD1}
+.t-cool{--bq1:#A9BFE8;--bq2:#4A66A8;--bq-bg1:#EEF2FB;--bq-bg2:#DCE4F5}
+
+.done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:28px 8px 8px}
+.done .mark{width:76px;height:76px;border-radius:50%;background:#E8F9EC;display:grid;place-items:center}
+
+.bottom{background:var(--bg-primary);padding:12px 16px 16px;border-top:1px solid var(--stroke-secondary);display:flex;flex-direction:column;gap:12px}
+.bsum{display:flex;flex-direction:column;gap:2px}
+.brow{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.blabel{font-size:15px;line-height:22px;color:var(--text-secondary)}
+.bval{font-size:20px;font-weight:700;line-height:28px;color:var(--text-accent);font-variant-numeric:tabular-nums}
+.bmeta{font-size:13px;line-height:18px;color:var(--text-secondary)}
+
+/* bottom sheet */
+.scrim{position:absolute;inset:0;background:rgba(41,49,60,.4);opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg-primary);border-radius:20px 20px 0 0;padding:8px 16px 20px;transform:translateY(100%);transition:transform .26s cubic-bezier(.32,.72,0,1);z-index:6;max-height:82%;overflow-y:auto}
+.sheet.on{transform:translateY(0)}
+.grab{width:36px;height:4px;border-radius:2px;background:var(--stroke-primary);margin:0 auto 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:15px;line-height:22px;letter-spacing:-.02em;border:0;border-radius:99px;padding:10px 16px;background:var(--bg-secondary);color:var(--text-primary);cursor:pointer;transition:background .12s,color .12s}
+.chip[aria-pressed="true"]{background:var(--accent-tint);color:var(--text-accent)}
+.chip:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px}
+.ta{background:var(--bg-secondary);border-radius:var(--r12);min-height:84px;padding:12px 14px;font:inherit;font-size:15px;line-height:22px;letter-spacing:-.02em;color:var(--text-primary);border:0;width:100%;resize:none}
+.ta::placeholder{color:var(--text-tertiary)}
+.ta:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px}
+
+.optrow{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:15px 0;border:0;border-top:1px solid var(--stroke-secondary);background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;letter-spacing:-.02em}
+.optrow:first-of-type{border-top:0}
+.optrow .nm{font-size:15px;line-height:22px;display:flex;align-items:baseline;gap:8px}
+.optrow .dc{font-size:13px;line-height:18px;color:var(--text-positive)}
+.optrow .on{opacity:0;color:var(--text-accent);flex:none}
+.optrow[aria-pressed="true"] .nm{font-weight:600}
+.optrow[aria-pressed="true"] .on{opacity:1}
+.optrow:focus-visible{outline:2px solid var(--stroke-accent);outline-offset:2px;border-radius:6px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <g id="bloomA">
+    <g fill="var(--bq1)">
+      <ellipse rx="7" ry="11" cy="-9"/><ellipse rx="7" ry="11" cy="-9" transform="rotate(72)"/>
+      <ellipse rx="7" ry="11" cy="-9" transform="rotate(144)"/><ellipse rx="7" ry="11" cy="-9" transform="rotate(216)"/>
+      <ellipse rx="7" ry="11" cy="-9" transform="rotate(288)"/>
+    </g>
+    <circle r="4.6" fill="var(--bq2)"/>
+  </g>
+  <g id="bloomB">
+    <g fill="var(--bq2)">
+      <ellipse rx="5.4" ry="8.6" cy="-7"/><ellipse rx="5.4" ry="8.6" cy="-7" transform="rotate(60)"/>
+      <ellipse rx="5.4" ry="8.6" cy="-7" transform="rotate(120)"/><ellipse rx="5.4" ry="8.6" cy="-7" transform="rotate(180)"/>
+      <ellipse rx="5.4" ry="8.6" cy="-7" transform="rotate(240)"/><ellipse rx="5.4" ry="8.6" cy="-7" transform="rotate(300)"/>
+    </g>
+    <circle r="3.4" fill="var(--bq1)"/>
+  </g>
+  <g id="bouquetArt">
+    <g stroke="#8FAE6B" stroke-width="2.6" fill="none" stroke-linecap="round">
+      <path d="M70 106 C68 82 58 64 46 52"/><path d="M70 106 C72 84 84 66 96 54"/>
+      <path d="M70 106 C70 86 70 70 70 46"/><path d="M70 94 C61 90 54 83 50 76"/><path d="M70 90 C79 86 86 80 90 73"/>
+    </g>
+    <use href="#bloomB" x="50" y="76"/><use href="#bloomB" x="90" y="73"/>
+    <use href="#bloomA" x="46" y="52"/><use href="#bloomA" x="96" y="54"/><use href="#bloomA" x="70" y="44"/>
+  </g>
+  <g id="tick"><path d="M4 10.5l4.2 4.2L16 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
+  <g id="icoCal"><rect x="3" y="4.5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M9 14.5l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></g>
+  <g id="icoFlower"><circle cx="12" cy="9" r="2.6" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M12 6.4c0-2.2-1-3.4-2.6-3.4S6.8 4.5 7.6 6.3M12 6.4c0-2.2 1-3.4 2.6-3.4s2.6 1.5 1.8 3.3M9.6 10.4c-1.9 1-3.2.6-3.9-.8-.7-1.4.2-3.2 2.2-3.3M14.4 10.4c1.9 1 3.2.6 3.9-.8.7-1.4-.2-3.2-2.2-3.3M12 11.6V21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></g>
+  <g id="icoTruck"><path d="M2.5 6.5h11v10h-11zM13.5 10h3.6l2.9 3v3.5h-6.5z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.8" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="16" cy="18" r="1.8" stroke="currentColor" stroke-width="1.8" fill="none"/></g>
+  <g id="icoPin"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="1.8" fill="none"/></g>
+  <g id="icoGift"><rect x="3" y="9.5" width="18" height="11.5" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M2 7h20v3.5H2zM12 7v14" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/><path d="M12 7S10.6 3 8.6 3a2 2 0 0 0 0 4zM12 7s1.4-4 3.4-4a2 2 0 0 1 0 4z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></g>
+</defs></svg>
+
+<div class="page">
+
+  <header class="phead">
+    <div>
+      <h1>Подписка на цветы — прототип</h1>
+      <p>Токены из Figma «RB · App · iOS + Android»: Montserrat, трекинг −2%, шкала 20/17/16/15/14/13/12, акцент #D93C82, фон #F2F3F5, радиусы 8/12, тень elevation/0, фрейм 375.</p>
+    </div>
+    <button class="tbtn" id="restart">Начать заново</button>
+  </header>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="statusbar">
+        <span id="clock">14:11</span>
+        <span style="display:flex;gap:6px;align-items:center">
+          <span class="sig"><i></i><i></i><i></i><i></i></span><span class="bat"></span>
+        </span>
+      </div>
+
+      <div class="appbar">
+        <button class="iconbtn" id="back" aria-label="Назад">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="ttl"><span id="barTitle">Подписка на цветы</span><span class="sub" id="barStep"></span></div>
+        <span></span>
+      </div>
+      <div class="progress" id="progress"></div>
+
+      <div class="viewport" id="viewport">
+
+        <!-- 0 · ПРИВЕТСТВЕННЫЙ -->
+        <section class="screen bare" data-s="0">
+          <div style="padding-top:12px;display:flex;flex-direction:column;gap:6px">
+            <div class="marquee"><div class="mrow" id="row1"></div></div>
+            <div class="marquee"><div class="mrow rev" id="row2"></div></div>
+          </div>
+          <div style="padding:20px 24px 16px;display:flex;flex-direction:column;gap:8px">
+            <h1 class="t3">Подписка на цветы</h1>
+            <p class="body" style="color:var(--text-secondary)">Свежий букет от флориста привозят вам регулярно — вы выбираете, какой и как часто.</p>
+          </div>
+          <div style="padding:0 24px 12px">
+            <h2 class="sec-t" style="margin-bottom:14px">Как это работает</h2>
+            <div class="how">
+              <div><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><use href="#icoGift"/></svg><span>Выбираете, себе или в подарок</span></div>
+              <div><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><use href="#icoFlower"/></svg><span>Выбираете размер букета</span></div>
+              <div><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><use href="#icoCal"/></svg><span>Назначаете первую доставку, частоту и стиль</span></div>
+              <div><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><use href="#icoTruck"/></svg><span>Получайте свежие цветы регулярно</span></div>
+            </div>
+          </div>
+          <div style="padding:12px 24px 16px">
+            <div class="trust" style="background:var(--bg-primary);border-radius:var(--r12);padding:16px">
+              <div><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="#tick"/></svg><span>Можно отменить в любой момент</span></div>
+              <div><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="#tick"/></svg><span>Возврат за недоставленные букеты</span></div>
+              <div><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="#tick"/></svg><span>Доставку можно пропустить или перенести</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 1 · ДЛЯ КОГО -->
+        <section class="screen" data-s="1" hidden>
+          <div class="card">
+            <h2 class="sec-t">Для кого подписка?</h2>
+            <p class="cap" style="margin-top:4px">От этого зависят получатель, срок и способ оплаты.</p>
+          </div>
+
+          <button type="button" class="sel flush" data-mode="self">
+            <div style="display:flex;gap:12px;padding:14px">
+              <div class="bouquet t-standard" style="width:60px;height:60px">
+                <svg class="bq" viewBox="0 0 140 115" aria-hidden="true"><use href="#bouquetArt"/></svg>
+              </div>
+              <div style="flex:1;min-width:0">
+                <strong style="font-size:16px;font-weight:600;line-height:22px">Себе</strong>
+                <p class="cap" style="margin-top:3px">Цветы домой или в офис. Платите перед каждой доставкой, отменяете когда угодно.</p>
+              </div>
+            </div>
+          </button>
+
+          <button type="button" class="sel flush" data-mode="gift">
+            <div style="display:flex;gap:12px;padding:14px">
+              <div class="bouquet t-premium" style="width:60px;height:60px">
+                <svg class="bq" viewBox="0 0 140 115" aria-hidden="true"><use href="#bouquetArt"/></svg>
+              </div>
+              <div style="flex:1;min-width:0">
+                <strong style="font-size:16px;font-weight:600;line-height:22px">В подарок</strong>
+                <p class="cap" style="margin-top:3px">Подписка на выбранный срок с открыткой. Оплачивается сразу, получателю платить не нужно.</p>
+              </div>
+            </div>
+          </button>
+        </section>
+
+        <!-- 2 · БУКЕТ -->
+        <section class="screen" data-s="2" hidden>
+          <div class="card">
+            <h2 class="sec-t">Размер букета</h2>
+            <p class="cap" style="margin-top:4px">Состав меняется каждую неделю — флорист собирает из того, что свежо.</p>
+          </div>
+          <div id="tariffs" style="display:flex;flex-direction:column;gap:8px"></div>
+        </section>
+
+        <!-- 3 · РАСПИСАНИЕ: первая дата + частота + срок + стиль + график -->
+        <section class="screen" data-s="3" hidden>
+          <div class="card">
+            <div class="sec-head">
+              <h2 class="sec-t">Первая доставка</h2>
+              <button class="link" type="button" id="calBtn">Календарь</button>
+            </div>
+            <div class="dates" id="dates" style="margin-top:12px"></div>
+            <p class="capsm" id="calHint" hidden style="margin-top:10px">В приложении здесь откроется календарь с доступными датами.</p>
+          </div>
+
+          <div class="card">
+            <h2 class="sec-t">Как часто привозить</h2>
+            <div class="seg" id="freqSeg" style="margin-top:12px">
+              <button type="button" data-freq="weekly" aria-pressed="true">Раз в неделю</button>
+              <button type="button" data-freq="biweekly" aria-pressed="false">Раз в 2 недели</button>
+              <button type="button" data-freq="monthly" aria-pressed="false">Раз в месяц</button>
+            </div>
+            <p class="capsm" style="margin-top:10px" id="afterFirst"></p>
+          </div>
+
+          <div class="card" id="durationCard" hidden>
+            <button type="button" class="navrow first" id="durRow">
+              <span class="k">Срок подписки</span>
+              <span class="v"><span id="durVal">12 месяцев</span> <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+
+          <div class="card">
+            <button type="button" class="navrow first" id="styleRow">
+              <span class="k">Стиль и пожелания</span>
+              <span class="v"><span id="styleVal">Сюрприз</span> <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="sec-head">
+              <h2 class="sec-t">Ближайшие доставки</h2>
+              <span class="cap" id="schedHint"></span>
+            </div>
+            <div class="sched" id="sched1" style="margin-top:10px"></div>
+          </div>
+        </section>
+
+        <!-- 4 · ОФОРМЛЕНИЕ (стандартная страница чекаута) -->
+        <section class="screen" data-s="4" hidden>
+          <div class="card">
+            <div style="display:flex;gap:12px;align-items:center">
+              <div class="bouquet t-standard" id="sumArt" style="width:56px;height:56px">
+                <svg class="bq" viewBox="0 0 140 115" aria-hidden="true"><use href="#bouquetArt"/></svg>
+              </div>
+              <div style="flex:1;min-width:0">
+                <strong style="font-size:16px;font-weight:600;line-height:22px" id="sumName">Standard</strong>
+                <p class="cap" id="sumSub" style="margin-top:2px"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <button type="button" class="navrow first" id="firstDeliveryRow">
+              <span class="k">Первая доставка</span>
+              <span class="v"><span id="firstDeliveryVal"></span> <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </button>
+            <p class="capsm" id="afterFirstCheckout" style="margin-top:2px"></p>
+          </div>
+
+          <div class="card">
+            <h2 class="sec-t">Контактные данные</h2>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+              <div class="fld"><p class="cap req">Имя</p><div class="inp">Дмитрий</div></div>
+              <div class="fld"><p class="cap req">Телефон</p><div class="inp"><span class="flag"></span>+995 599 87-65-43</div></div>
+              <div class="fld"><p class="cap req">Email</p><div class="inp">name@example.com</div></div>
+            </div>
+          </div>
+
+          <div class="card" id="recipientCard" hidden>
+            <h2 class="sec-t">Получатель</h2>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+              <button type="button" class="btn sec">Выбрать из контактов</button>
+              <div class="fld"><p class="cap req">Имя получателя</p><div class="inp">Нина</div></div>
+              <div class="fld"><p class="cap req">Телефон получателя</p><div class="inp"><span class="flag"></span>+995 555 12-34-56</div></div>
+              <div class="fld"><p class="cap">Открытка</p><div class="inp">«С днём рождения!»</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="sec-t">Доставка</h2>
+            <div style="margin-top:6px">
+              <button type="button" class="navrow first"><span class="k req">Город</span><span class="v">Тбилиси <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" class="navrow"><span class="k req">Адрес</span><span class="v"><span id="addrVal">ул. Абашидзе, 24 — кв. 12</span> <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <div class="navrow" id="askRow" hidden style="cursor:default"><span class="k">Спросить адрес у получателя</span><button type="button" class="toggle" id="askToggle" aria-pressed="false" aria-label="Спросить адрес у получателя"></button></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="sec-t">Оплата</h2>
+            <div style="margin-top:6px">
+              <button type="button" class="navrow first"><span class="k">Способ оплаты</span><span class="v">·· 6264 <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div id="breakdown"></div>
+
+            <div style="margin-top:14px">
+              <div class="agree">
+                <button type="button" class="chk" data-ag="1" aria-pressed="true" aria-label="Согласие на обработку персональных данных"><svg width="20" height="20" viewBox="0 0 20 20" style="color:#fff" aria-hidden="true"><use href="#tick"/></svg></button>
+                <p>Согласен на <span class="accent">обработку персональных данных</span></p>
+              </div>
+              <div class="agree">
+                <button type="button" class="chk" data-ag="2" aria-pressed="true" aria-label="Согласие с условиями оферты"><svg width="20" height="20" viewBox="0 0 20 20" style="color:#fff" aria-hidden="true"><use href="#tick"/></svg></button>
+                <p>Принимаю <span class="accent">условия оферты</span> и <span class="accent">политику конфиденциальности</span></p>
+              </div>
+            </div>
+
+            <p class="capsm" id="agreeErr" hidden style="color:var(--text-negative);margin:10px 0 0">Чтобы продолжить, отметьте оба согласия</p>
+            <button type="button" class="btn" id="payBtn" style="margin-top:14px">Оплатить</button>
+            <p class="capsm" style="text-align:center;margin-top:10px">Оплата картой ·· 6264</p>
+          </div>
+        </section>
+
+        <!-- 5 · ГОТОВО -->
+        <section class="screen" data-s="5" hidden>
+          <div class="card">
+            <div class="done">
+              <div class="mark"><svg width="36" height="36" viewBox="0 0 20 20" style="color:var(--text-positive)" aria-hidden="true"><use href="#tick"/></svg></div>
+              <h2 class="t3">Подписка оформлена</h2>
+              <p class="cap" id="doneSub" style="max-width:30ch"></p>
+            </div>
+            <div class="sched" id="sched3" style="margin-top:10px"></div>
+          </div>
+
+          <div class="card">
+            <h2 class="sec-t">Управление</h2>
+            <div style="margin-top:6px">
+              <button type="button" class="navrow first"><span class="k">Пропустить доставку</span><span class="v accent">Настроить <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" class="navrow"><span class="k">Перенести дату</span><span class="v accent">Настроить <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" class="navrow"><span class="k">Отменить подписку</span><span class="v">В профиле <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="bottom" id="bottomBar">
+        <div class="bsum" id="bpriceWrap" hidden>
+          <div class="brow"><span class="blabel">Цена за букет</span><span class="bval" id="bPrice">—</span></div>
+          <div class="bmeta" id="bMeta"></div>
+        </div>
+        <button class="btn" id="cta">Далее</button>
+      </div>
+
+      <!-- bottom sheet: стиль и пожелания -->
+      <div class="scrim" id="scrim"></div>
+      <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Стиль и пожелания">
+        <div class="grab"></div>
+        <h2 class="t3">Стиль букета</h2>
+        <p class="cap" style="margin-top:6px">Можно выбрать несколько или довериться флористу.</p>
+        <div class="chips" id="styleChips" style="margin-top:16px"></div>
+        <p class="cap" style="margin-top:20px">Пожелания флористу</p>
+        <textarea class="ta" id="wishes" style="margin-top:8px" maxlength="250" placeholder="Например: без лилий, люблю пионовидные розы"></textarea>
+        <p class="capsm" style="margin-top:6px">Передадим флористу перед первой сборкой.</p>
+        <button type="button" class="btn" id="sheetSave" style="margin-top:18px">Сохранить</button>
+      </div>
+
+      <!-- bottom sheet: срок подписки -->
+      <div class="sheet" id="durSheet" role="dialog" aria-modal="true" aria-label="Срок подписки">
+        <div class="grab"></div>
+        <h2 class="t3">Срок подписки</h2>
+        <p class="cap" style="margin-top:6px">Чем длиннее срок, тем ниже цена букета.</p>
+        <div id="durOptions" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var TARIFFS = [
+    {id:"mini",     name:"Mini",     price:60,  stems:"11–13 стеблей", sorts:"3 сорта",  desc:"Компактный букет для кухонного стола или рабочего места.", cls:"t-mini"},
+    {id:"standard", name:"Standard", price:100, stems:"18–20 стеблей", sorts:"5 сортов", desc:"Самый частый выбор. Хорошо смотрится в гостиной.", cls:"t-standard", popular:true},
+    {id:"premium",  name:"Premium",  price:150, stems:"27–30 стеблей", sorts:"7 сортов", desc:"Крупная композиция, заметная в большой комнате.", cls:"t-premium"}
+  ];
+
+  var FREQ = {
+    weekly:   {label:"Раз в неделю",   days:7,  perMonth:4, short:"каждые 7 дней"},
+    biweekly: {label:"Раз в 2 недели", days:14, perMonth:2, short:"каждые 14 дней"},
+    monthly:  {label:"Раз в месяц",    days:30, perMonth:1, short:"каждые 30 дней"}
+  };
+
+  var DURATIONS = [1, 3, 6, 12];
+  var DISCOUNT = {1:0, 3:0, 6:0.05, 12:0.10};
+  var STYLES = ["Яркие","Пастельные","Монохром","Пионовидные розы","С зеленью","Полевые"];
+  var STEP_TITLES = ["Подписка на цветы","Для кого","Размер букета","Расписание","Оформление","Готово"];
+  var PALETTES = ["t-standard","t-mini","t-premium","t-warm","t-cool","t-standard","t-premium","t-warm"];
+
+  var S = {step:0, mode:"self", tariff:"standard", freq:"weekly", dateIdx:0, dur:12,
+           styles:[], wishes:"", ag1:true, ag2:true, ask:false};
+
+  function $(id){ return document.getElementById(id); }
+  function money(n){ return "$" + Math.round(n).toLocaleString("en-US"); }
+  function tariff(){ for(var i=0;i<TARIFFS.length;i++){ if(TARIFFS[i].id===S.tariff) return TARIFFS[i]; } return TARIFFS[1]; }
+  function perMonth(){ return tariff().price * FREQ[S.freq].perMonth; }
+  function isGift(){ return S.mode === "gift"; }
+  function giftCount(){ return FREQ[S.freq].perMonth * S.dur; }
+  function giftTotal(){ return tariff().price * giftCount() * (1 - DISCOUNT[S.dur]); }
+  function durWord(n){ return n === 1 ? "1 месяц" : n + " мес."; }
+  function durWordFull(n){ return n + (n === 1 ? " месяц" : (n < 5 ? " месяца" : " месяцев")); }
+
+  function startDate(){
+    var d = new Date(); d.setHours(0,0,0,0);
+    d.setDate(d.getDate() + 1 + S.dateIdx);
+    return d;
+  }
+  function deliveryDates(count){
+    var out = [], d = startDate(), step = FREQ[S.freq].days;
+    for(var i=0;i<count;i++){ out.push(new Date(d.getTime())); d.setDate(d.getDate()+step); }
+    return out;
+  }
+  function fmtDate(d){ return d.toLocaleDateString("ru-RU",{day:"numeric",month:"long"}); }
+
+  function chev(){
+    return '<svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  /* ---------- landing carousels ---------- */
+  function buildCarousels(){
+    ["row1","row2"].forEach(function(id, r){
+      var html = "", i, n = 8;
+      for(i=0;i<n*2;i++){
+        var p = PALETTES[(i + r*3) % PALETTES.length];
+        html += '<div class="mtile bouquet '+p+'"><svg class="bq" viewBox="0 0 140 115" aria-hidden="true"><use href="#bouquetArt"/></svg></div>';
+      }
+      $(id).innerHTML = html;
+    });
+  }
+
+  /* ---------- tariffs ---------- */
+  function buildTariffs(){
+    var wrap = $("tariffs");
+    wrap.innerHTML = "";
+    TARIFFS.forEach(function(t){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "sel flush";
+      b.setAttribute("data-tariff", t.id);
+      b.innerHTML =
+        '<div class="bouquet '+t.cls+'" style="height:128px;border-radius:0"><svg class="bq" viewBox="0 0 140 115" aria-hidden="true"><use href="#bouquetArt"/></svg></div>'+
+        '<div style="padding:14px">'+
+          '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
+            '<strong style="font-size:16px;font-weight:600;line-height:22px">'+t.name+'</strong>'+
+            (t.popular ? '<span style="font-size:12px;line-height:14px;font-weight:600;color:#fff;background:var(--bg-accent);border-radius:99px;padding:3px 8px">Популярный</span>' : '')+
+          '</div>'+
+          '<p class="cap" style="margin-top:4px">'+t.desc+'</p>'+
+          '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:10px">'+
+            '<span class="capsm">'+t.stems+' · '+t.sorts+'</span>'+
+            '<span style="font-size:17px;font-weight:600;line-height:24px;white-space:nowrap" class="accent">'+money(t.price)+' <span class="capsm">за букет</span></span>'+
+          '</div>'+
+        '</div>';
+      wrap.appendChild(b);
+    });
+  }
+
+  function buildDurations(){
+    var html = "";
+    DURATIONS.forEach(function(n){
+      var d = DISCOUNT[n];
+      html += '<button type="button" class="optrow" data-dur="'+n+'">'+
+                '<span class="nm">'+durWordFull(n)+(d ? '<span class="dc">−'+Math.round(d*100)+'%</span>' : '')+'</span>'+
+                '<svg class="on" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><use href="#tick"/></svg>'+
+              '</button>';
+    });
+    $("durOptions").innerHTML = html;
+  }
+
+  function buildChips(){
+    var html = '<button type="button" class="chip" data-style="__none__">Сюрприз</button>';
+    STYLES.forEach(function(s){ html += '<button type="button" class="chip" data-style="'+s+'">'+s+'</button>'; });
+    $("styleChips").innerHTML = html;
+  }
+
+  function stylesLabel(){
+    if(!S.styles.length) return S.wishes ? "Сюрприз · есть пожелания" : "Сюрприз";
+    var base = S.styles.join(", ");
+    return S.wishes ? base + " · есть пожелания" : base;
+  }
+
+  /* ---------- schedule ---------- */
+  function renderSched(el, count, showPrice, tail){
+    var dates = deliveryDates(count), html = "", p = tariff().price;
+    dates.forEach(function(d,i){
+      html += '<div class="s'+(i===0?" first":"")+'">'+
+                '<span class="n">'+(i+1)+'</span>'+
+                '<span class="d">'+fmtDate(d)+(i===0?" · первая":"")+'</span>'+
+                (showPrice ? '<span class="p">'+money(p)+'</span>' : '')+
+              '</div>';
+    });
+    if(tail) html += '<div class="more">'+tail+'</div>';
+    el.innerHTML = html;
+  }
+
+  /* ---------- breakdown ---------- */
+  function renderBreakdown(){
+    var t = tariff(), f = FREQ[S.freq], html = "";
+    if(isGift()){
+      var gross = t.price * giftCount(), disc = gross * DISCOUNT[S.dur];
+      html += '<div class="prow"><span class="k">Букет «'+t.name+'»</span><span class="v">'+money(t.price)+'</span></div>';
+      html += '<div class="prow"><span class="k">Доставок за '+durWord(S.dur)+'</span><span class="v">'+giftCount()+'</span></div>';
+      if(disc > 0) html += '<div class="prow"><span class="k">Скидка за срок '+durWord(S.dur)+'</span><span class="v pos">−'+money(disc)+'</span></div>';
+      html += '<div class="charge"><span class="k">Спишем сейчас</span><span class="v">'+money(gross-disc)+'</span></div>';
+      html += '<p class="capsm" style="margin-top:10px">Можно отменить и получить возврат за недоставленные букеты в любой момент.</p>';
+    } else {
+      html += '<div class="prow"><span class="k">Букет «'+t.name+'»</span><span class="v">'+money(t.price)+'</span></div>';
+      html += '<div class="charge"><span class="k">Спишем сейчас</span><span class="v">'+money(t.price)+'</span></div>';
+      html += '<p class="capsm" style="margin-top:10px">Это оплата первой доставки. Дальше '+money(t.price)+' за каждую, '+f.short+' — списываем за день до доставки. Отменить можно в любой момент.</p>';
+    }
+    $("breakdown").innerHTML = html;
+  }
+
+  /* ---------- bottom ---------- */
+  function renderBottom(){
+    var t = tariff(), f = FREQ[S.freq];
+    var cta = $("cta"), wrap = $("bpriceWrap");
+    cta.disabled = false;
+
+    // На оформлении нижняя панель убрана: кнопка стоит под согласиями, как в макете.
+    $("bottomBar").hidden = (S.step === 4);
+    if(S.step === 4){
+      $("payBtn").textContent = "Оплатить " + money(isGift() ? giftTotal() : t.price);
+      $("payBtn").disabled = !(S.ag1 && S.ag2);
+      return;
+    }
+
+    // Цена в панели только там, где она уже определена — на расписании.
+    wrap.hidden = (S.step !== 3);
+    if(S.step === 3){
+      $("bPrice").textContent = money(t.price);
+      $("bMeta").textContent = isGift()
+        ? f.label + " · " + durWordFull(S.dur)
+        : f.label;
+    }
+
+    cta.textContent = S.step === 0 ? "Подписаться" : (S.step === 5 ? "Хорошо" : "Далее");
+  }
+
+  function setPressed(sel, test){
+    var els = document.querySelectorAll(sel), i;
+    for(i=0;i<els.length;i++){ els[i].setAttribute("aria-pressed", String(test(els[i]))); }
+  }
+
+  /* ---------- render ---------- */
+  function render(){
+    var i, els = document.querySelectorAll(".screen");
+    for(i=0;i<els.length;i++){ els[i].hidden = (Number(els[i].getAttribute("data-s")) !== S.step); }
+
+    $("barTitle").textContent = STEP_TITLES[S.step];
+    $("barStep").textContent = (S.step >= 1 && S.step <= 4) ? ("Шаг " + S.step + " из 4") : "";
+    $("back").disabled = (S.step === 0);
+
+    var pr = "";
+    for(i=1;i<=4;i++){ pr += '<i class="'+(i <= S.step ? "on" : "")+'"></i>'; }
+    $("progress").innerHTML = pr;
+
+    setPressed("[data-mode]", function(el){ return el.getAttribute("data-mode") === S.mode; });
+    setPressed("[data-tariff]", function(el){ return el.getAttribute("data-tariff") === S.tariff; });
+    setPressed("[data-freq]", function(el){ return el.getAttribute("data-freq") === S.freq; });
+    setPressed("[data-dur]", function(el){ return Number(el.getAttribute("data-dur")) === S.dur; });
+    setPressed("[data-ag='1']", function(){ return S.ag1; });
+    setPressed("[data-ag='2']", function(){ return S.ag2; });
+    setPressed("[data-style]", function(el){
+      var v = el.getAttribute("data-style");
+      return v === "__none__" ? S.styles.length === 0 : S.styles.indexOf(v) !== -1;
+    });
+
+    // step 2
+    $("styleVal").textContent = stylesLabel();
+
+    // step 3
+    $("durationCard").hidden = !isGift();
+    $("durVal").textContent = durWordFull(S.dur);
+    $("schedHint").textContent = isGift() ? giftCount() + " доставок" : "";
+    renderSched($("sched1"), 4, false, isGift()
+      ? "Всего " + giftCount() + " доставок за " + durWordFull(S.dur) + ". Отмена в любой момент"
+      : "И далее " + FREQ[S.freq].short + ". Отмена в любой момент");
+
+    // step 4 — summary
+    var t = tariff();
+    $("sumArt").className = "bouquet " + t.cls;
+    $("sumName").textContent = t.name;
+    $("sumSub").textContent = isGift()
+      ? FREQ[S.freq].label + " · " + durWord(S.dur)
+      : FREQ[S.freq].label + " · без срока";
+
+    var html = "", d0 = new Date(); d0.setHours(0,0,0,0);
+    for(i=0;i<4;i++){
+      var d = new Date(d0.getTime()); d.setDate(d.getDate()+1+i);
+      html += '<button type="button" class="dchip" data-date="'+i+'" aria-pressed="'+(i===S.dateIdx)+'">'+
+                '<em>'+d.toLocaleDateString("ru-RU",{weekday:"short"})+'</em>'+
+                '<b>'+d.toLocaleDateString("ru-RU",{day:"numeric",month:"short"}).replace(".","")+'</b></button>';
+    }
+    $("dates").innerHTML = html;
+    $("afterFirst").textContent = "Любую доставку можно пропустить или перенести.";
+    $("firstDeliveryVal").textContent = fmtDate(startDate());
+    $("afterFirstCheckout").textContent = "Дальше — " + FREQ[S.freq].short;
+
+    var self = !isGift();
+    $("recipientCard").hidden = self;
+    $("askRow").hidden = self;
+    $("askToggle").setAttribute("aria-pressed", String(S.ask));
+    $("addrVal").textContent = self
+      ? "ул. Абашидзе, 24 — кв. 12"
+      : (S.ask ? "Спросим у получателя" : "пр. Руставели, 8 — кв. 40");
+
+    renderBreakdown();
+    $("agreeErr").hidden = (S.ag1 && S.ag2);
+
+    // step 5
+    $("doneSub").textContent = self
+      ? "Напомним за день до каждой доставки. Пропустить или перенести можно в любой момент."
+      : "Отправим открытку вместе с первым букетом и напомним вам о каждой доставке.";
+    renderSched($("sched3"), 3, false, self
+      ? "И далее " + FREQ[S.freq].short
+      : "Всего " + giftCount() + " доставок");
+
+    renderBottom();
+  }
+
+  function go(delta){
+    S.step = Math.max(0, Math.min(5, S.step + delta));
+    $("viewport").scrollTop = 0;
+    render();
+  }
+
+  /* ---------- sheets ---------- */
+  function openStyleSheet(){
+    $("wishes").value = S.wishes;
+    $("scrim").classList.add("on");
+    $("sheet").classList.add("on");
+  }
+  function openDurSheet(){
+    $("scrim").classList.add("on");
+    $("durSheet").classList.add("on");
+  }
+  function closeSheets(){
+    if($("sheet").classList.contains("on")) S.wishes = $("wishes").value.trim();
+    $("scrim").classList.remove("on");
+    $("sheet").classList.remove("on");
+    $("durSheet").classList.remove("on");
+    render();
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener("click", function(e){
+    var el = e.target.closest("[data-mode],[data-tariff],[data-freq],[data-dur],[data-date],[data-ag],[data-style]");
+    if(!el) return;
+    if(el.hasAttribute("data-mode")){
+      S.mode = el.getAttribute("data-mode");
+      if(isGift() && S.dur === 1) S.dur = 12;
+      go(1);
+      return;
+    }
+    if(el.hasAttribute("data-tariff")) S.tariff = el.getAttribute("data-tariff");
+    if(el.hasAttribute("data-freq"))   S.freq   = el.getAttribute("data-freq");
+    if(el.hasAttribute("data-date"))   S.dateIdx = Number(el.getAttribute("data-date"));
+    if(el.hasAttribute("data-dur")){
+      S.dur = Number(el.getAttribute("data-dur"));
+      closeSheets();
+      return;
+    }
+    if(el.getAttribute("data-ag") === "1") S.ag1 = !S.ag1;
+    if(el.getAttribute("data-ag") === "2") S.ag2 = !S.ag2;
+    if(el.hasAttribute("data-style")){
+      var v = el.getAttribute("data-style");
+      if(v === "__none__"){ S.styles = []; }
+      else {
+        var k = S.styles.indexOf(v);
+        if(k === -1) S.styles.push(v); else S.styles.splice(k,1);
+      }
+    }
+    render();
+  });
+
+  $("styleRow").addEventListener("click", openStyleSheet);
+  $("durRow").addEventListener("click", openDurSheet);
+  $("sheetSave").addEventListener("click", closeSheets);
+  $("scrim").addEventListener("click", closeSheets);
+  $("askToggle").addEventListener("click", function(){ S.ask = !S.ask; render(); });
+
+  $("cta").addEventListener("click", function(){
+    if(S.step === 5){
+      S = {step:0, mode:"self", tariff:"standard", freq:"weekly", dateIdx:0, dur:12,
+           styles:[], wishes:"", ag1:true, ag2:true, ask:false};
+      $("viewport").scrollTop = 0; render();
+      return;
+    }
+    go(1);
+  });
+  $("back").addEventListener("click", function(){ go(-1); });
+  $("calBtn").addEventListener("click", function(){ var h = $("calHint"); h.hidden = !h.hidden; });
+  $("payBtn").addEventListener("click", function(){ if(S.ag1 && S.ag2) go(1); });
+  $("firstDeliveryRow").addEventListener("click", function(){ S.step = 3; $("viewport").scrollTop = 0; render(); });
+
+  $("restart").addEventListener("click", function(){
+    S = {step:0, mode:"self", tariff:"standard", freq:"weekly", dateIdx:0, dur:12,
+         styles:[], wishes:"", ag1:true, ag2:true, ask:false};
+    $("viewport").scrollTop = 0;
+    render();
+  });
+
+  (function tick(){
+    var d = new Date();
+    $("clock").textContent = d.getHours() + ":" + String(d.getMinutes()).padStart(2,"0");
+    setTimeout(tick, 30000);
+  })();
+
+  buildCarousels();
+  buildTariffs();
+  buildChips();
+  buildDurations();
+  render();
+})();
+</script>
