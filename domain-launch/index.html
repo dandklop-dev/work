@@ -112,7 +112,7 @@ footer a{color:inherit}
   <header>
     <h1>Чек-лист запуска нового домена</h1>
     <p>Сводный лист по трём направлениям: контент, разработка, SEO. У каждого пункта свои поля «Исполнитель» и «Срок» — заполните их здесь, и они уедут в скопированный текст, либо оставьте пустыми и впишите уже в документе. Пункты с пометкой «до запуска» нужно закрыть до открытия домена.</p>
-    <p>Кнопки копируют готовый текст — он вставляется в Google&nbsp;Docs и Confluence как список задач с чекбоксами. Отметки и заполненные поля хранятся только в вашем браузере.</p>
+    <p>Формат «Таблица» вставляется в Confluence и Google&nbsp;Docs готовой таблицей с колонками, как в исходных листах: готово, пункт, описание, направление, ориентир, исполнитель, срок. «Markdown» — та же таблица в виде разметки, «Список» — пункты с чекбоксами. Отметки и заполненные поля хранятся только в вашем браузере.</p>
     <div class="fields">
       <span>Домен: ______</span>
       <span>Локаль: ______</span>
@@ -124,8 +124,9 @@ footer a{color:inherit}
   <div class="bar">
     <button class="primary" id="copyAll">Скопировать весь чек-лист</button>
     <div class="seg" role="group" aria-label="Формат копирования">
-      <button data-fmt="md" aria-pressed="true">Markdown</button>
-      <button data-fmt="txt" aria-pressed="false">Простой текст</button>
+      <button data-fmt="table" aria-pressed="true">Таблица</button>
+      <button data-fmt="md" aria-pressed="false">Markdown</button>
+      <button data-fmt="list" aria-pressed="false">Список</button>
     </div>
     <span class="hint">54 пункта, из них 8 — до запуска</span>
   </div>
@@ -147,7 +148,7 @@ footer a{color:inherit}
 <script>
 var STORE = 'domain-launch-checks';
 var FIELDS = 'domain-launch-fields';
-var fmt = 'md';
+var fmt = 'table';
 var doc = { groups: [] };
 
 function parse(md){
@@ -176,19 +177,19 @@ function split(src){
   var nameMatch = src.match(/^\*\*(.+?)\*\*/);
   var name = nameMatch ? nameMatch[1] : src;
   var rest = src.replace(/^\*\*.+?\*\*\s*/, '').replace(/^—\s*/, '');
-  var tags = [], desc = [], crit = false;
+  var tags = [], desc = [], crit = false, role = '', est = '';
   var parts = rest.split(/\s+—\s+/);
   for (var i = 0; i < parts.length; i++) {
     var p = parts[i];
     if (!p) continue;
     if (p.charAt(0) === '⛔') { crit = true; }
     else if (/^Исполнитель:/.test(p) || /^Срок:/.test(p)) { /* поля рисуются отдельно */ }
-    else if (/^ориентир:/.test(p)) { tags.push(p.replace(/^ориентир:\s*/, '')); }
-    else if (/^\*.+\*$/.test(p)) { tags.push(p.replace(/^\*|\*$/g, '')); }
-    else if (p.charAt(0) === '~') { tags.push(p); }
+    else if (/^ориентир:/.test(p)) { est = p.replace(/^ориентир:\s*/, ''); tags.push(est); }
+    else if (/^\*.+\*$/.test(p)) { role = p.replace(/^\*|\*$/g, ''); tags.push(role); }
+    else if (p.charAt(0) === '~') { est = p; tags.push(est); }
     else { desc.push(p); }
   }
-  return { name: name, desc: desc.join(' — '), tags: tags, crit: crit };
+  return { name: name, desc: desc.join(' — '), tags: tags, crit: crit, role: role, est: est };
 }
 
 function esc(s){
@@ -198,53 +199,141 @@ function inline(s){
   return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
 }
 
-function toText(it){
+var COLS = ['Готово', 'Пункт', 'Описание', 'Направление', 'Ориентир', 'Исполнитель', 'Срок'];
+
+function cells(it){
   var f = loadFields();
-  var who = f[it.key + '.who'] || '';
-  var due = f[it.key + '.due'] || '';
-  var src = it.md
-    .replace(/Исполнитель: _+/, 'Исполнитель: ' + (who || '__________'))
-    .replace(/Срок: _+/, 'Срок: ' + (due || '__________'));
-  if (fmt === 'md') return '- [ ] ' + src;
-  var p = split(src);
-  var s = '☐ ' + (p.crit ? '[ДО ЗАПУСКА] ' : '') + p.name;
-  if (p.desc) s += ' — ' + p.desc.replace(/`/g, '');
-  var meta = p.tags.slice();
-  meta.push('Исполнитель: ' + (who || '______'));
-  meta.push('Срок: ' + (due || '______'));
-  return s + ' (' + meta.join(', ') + ')';
+  var p = split(it.md);
+  return [
+    '',
+    (p.crit ? '⛔ ' : '') + p.name,
+    p.desc.replace(/`/g, ''),
+    p.role,
+    p.est,
+    f[it.key + '.who'] || '',
+    f[it.key + '.due'] || ''
+  ];
 }
 
-function groupText(g){
-  var out = [fmt === 'md' ? '## ' + g.title : g.title.toUpperCase(), ''];
-  for (var i = 0; i < g.phases.length; i++) {
-    var ph = g.phases[i];
-    if (ph.title) { out.push(fmt === 'md' ? '### ' + ph.title : ph.title); out.push(''); }
-    for (var j = 0; j < ph.items.length; j++) out.push(toText(ph.items[j]));
+var TITLE = 'Чек-лист запуска нового домена';
+var HEAD_FIELDS = 'Домен: ______   Локаль: ______   Дата запуска: ______   Ответственный за запуск: ______';
+
+function htmlTable(groups){
+  var h = '';
+  for (var gi = 0; gi < groups.length; gi++) {
+    var g = groups[gi];
+    h += '<h2>' + esc(g.title) + '</h2>';
+    h += '<table><thead><tr>';
+    for (var c = 0; c < COLS.length; c++) h += '<th>' + COLS[c] + '</th>';
+    h += '</tr></thead><tbody>';
+    for (var pi = 0; pi < g.phases.length; pi++) {
+      var ph = g.phases[pi];
+      if (ph.title) {
+        h += '<tr><td colspan="' + COLS.length + '"><strong>' + esc(ph.title) + '</strong></td></tr>';
+      }
+      for (var ii = 0; ii < ph.items.length; ii++) {
+        var row = cells(ph.items[ii]);
+        h += '<tr>';
+        for (var k = 0; k < row.length; k++) {
+          h += '<td>' + (k === 1 ? '<strong>' + esc(row[k]) + '</strong>' : esc(row[k])) + '</td>';
+        }
+        h += '</tr>';
+      }
+    }
+    h += '</tbody></table>';
+  }
+  return h;
+}
+
+function mdTable(groups){
+  var out = [];
+  for (var gi = 0; gi < groups.length; gi++) {
+    var g = groups[gi];
+    out.push('## ' + g.title, '');
+    out.push('| ' + COLS.join(' | ') + ' |');
+    var rule = [];
+    for (var c = 0; c < COLS.length; c++) rule.push('---');
+    out.push('| ' + rule.join(' | ') + ' |');
+    for (var pi = 0; pi < g.phases.length; pi++) {
+      var ph = g.phases[pi];
+      if (ph.title) {
+        var blanks = [];
+        for (var b = 0; b < COLS.length - 2; b++) blanks.push('');
+        out.push('| | **' + ph.title + '** | ' + blanks.join(' | ') + ' |');
+      }
+      for (var ii = 0; ii < ph.items.length; ii++) {
+        var row = cells(ph.items[ii]);
+        for (var k = 0; k < row.length; k++) row[k] = row[k].replace(/\|/g, '\\|');
+        row[1] = '**' + row[1] + '**';
+        out.push('| ' + row.join(' | ') + ' |');
+      }
+    }
     out.push('');
+  }
+  return out.join('\n').replace(/\s+$/, '');
+}
+
+function listText(groups){
+  var f = loadFields();
+  var out = [];
+  for (var gi = 0; gi < groups.length; gi++) {
+    var g = groups[gi];
+    out.push('## ' + g.title, '');
+    for (var pi = 0; pi < g.phases.length; pi++) {
+      var ph = g.phases[pi];
+      if (ph.title) { out.push('### ' + ph.title, ''); }
+      for (var ii = 0; ii < ph.items.length; ii++) {
+        var it = ph.items[ii];
+        out.push('- [ ] ' + it.md
+          .replace(/Исполнитель: _+/, 'Исполнитель: ' + (f[it.key + '.who'] || '__________'))
+          .replace(/Срок: _+/, 'Срок: ' + (f[it.key + '.due'] || '__________')));
+      }
+      out.push('');
+    }
   }
   return out.join('\n').replace(/\n{3,}/g, '\n\n').replace(/\s+$/, '');
 }
 
-function allText(){
-  var head = fmt === 'md'
-    ? ['# Чек-лист запуска нового домена', '', '**Домен:** ______  **Локаль:** ______  **Дата запуска:** ______  **Ответственный:** ______', '']
-    : ['ЧЕК-ЛИСТ ЗАПУСКА НОВОГО ДОМЕНА', '', 'Домен: ______   Локаль: ______   Дата запуска: ______   Ответственный: ______', ''];
-  var sep = fmt === 'md' ? '\n\n---\n\n' : '\n\n';
-  var body = [];
-  for (var i = 0; i < doc.groups.length; i++) body.push(groupText(doc.groups[i]));
-  return head.join('\n') + '\n' + body.join(sep);
+function payload(groups){
+  if (fmt === 'table') {
+    return {
+      html: '<p><strong>' + TITLE + '</strong><br>' + esc(HEAD_FIELDS) + '</p>' + htmlTable(groups),
+      plain: TITLE + '\n' + HEAD_FIELDS + '\n\n' + mdTable(groups)
+    };
+  }
+  var head = '# ' + TITLE + '\n\n' + HEAD_FIELDS + '\n\n';
+  return { plain: head + (fmt === 'md' ? mdTable(groups) : listText(groups)) };
 }
 
-function copy(text, btn){
+function copy(pl, btn){
   var label = btn.textContent;
   function done(){
     btn.textContent = 'Скопировано';
     setTimeout(function(){ btn.textContent = label; }, 1400);
   }
-  function fallbackCopy(){
+  // Таблица: кладём в буфер размеченный HTML, тогда Confluence и Docs
+  // вставляют настоящую таблицу, а не строку текста.
+  function copyRichViaSelection(){
+    var d = document.createElement('div');
+    d.setAttribute('contenteditable', 'true');
+    d.innerHTML = pl.html;
+    d.style.position = 'fixed';
+    d.style.left = '-9999px';
+    d.style.top = '0';
+    document.body.appendChild(d);
+    var r = document.createRange();
+    r.selectNodeContents(d);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(r);
+    try { document.execCommand('copy'); } catch (e) {}
+    sel.removeAllRanges();
+    d.parentNode.removeChild(d);
+    done();
+  }
+  function copyPlain(){
     var ta = document.createElement('textarea');
-    ta.value = text;
+    ta.value = pl.plain;
     ta.style.position = 'fixed';
     ta.style.opacity = '0';
     document.body.appendChild(ta);
@@ -253,10 +342,24 @@ function copy(text, btn){
     ta.parentNode.removeChild(ta);
     done();
   }
+  if (pl.html) {
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      try {
+        var item = new ClipboardItem({
+          'text/html': new Blob([pl.html], { type: 'text/html' }),
+          'text/plain': new Blob([pl.plain], { type: 'text/plain' })
+        });
+        navigator.clipboard.write([item]).then(done, copyRichViaSelection);
+        return;
+      } catch (e) { /* ниже запасной путь */ }
+    }
+    copyRichViaSelection();
+    return;
+  }
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(done, fallbackCopy);
+    navigator.clipboard.writeText(pl.plain).then(done, copyPlain);
   } else {
-    fallbackCopy();
+    copyPlain();
   }
 }
 
@@ -299,7 +402,7 @@ function render(){
     cnt.textContent = total + ' пунктов' + (crit ? ' · ' + crit + ' до запуска' : '');
     var btn = document.createElement('button');
     btn.textContent = 'Скопировать раздел';
-    btn.addEventListener('click', function(){ copy(groupText(g), btn); });
+    btn.addEventListener('click', function(){ copy(payload([g]), btn); });
     head.appendChild(h2); head.appendChild(cnt); head.appendChild(btn);
     sec.appendChild(head);
 
@@ -390,7 +493,7 @@ document.querySelectorAll('.seg button').forEach(function(b){
     });
   });
 });
-document.getElementById('copyAll').addEventListener('click', function(e){ copy(allText(), e.currentTarget); });
+document.getElementById('copyAll').addEventListener('click', function(e){ copy(payload(doc.groups), e.currentTarget); });
 
 fetch('checklist.md', { cache: 'no-cache' })
   .then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); })
