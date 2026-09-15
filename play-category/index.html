@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fendora · Выбор категории Google Play</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #0f172a;
+            --text-sec: #475569;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+            color: var(--text-main);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-sec);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background: var(--bg);
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text-sec);
+            font-size: 0.95rem;
+            border-bottom: 2px solid var(--border);
+            vertical-align: bottom;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        /* Highlight recommended column */
+        th.recommended-col {
+            background: #eff6ff;
+            color: var(--primary);
+        }
+        
+        td.recommended-col {
+            background: #eff6ff;
+            position: relative;
+        }
+
+        /* Styling badges and text */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        .badge-perfect { background: #d1fae5; color: #065f46; }
+        .badge-good { background: #e0e7ff; color: #3730a3; }
+        .badge-medium { background: #fef3c7; color: #92400e; }
+        .badge-weak { background: #fee2e2; color: #991b1b; }
+
+        .stars { color: #f59e0b; font-size: 1.1rem; }
+
+        .metric-value { font-weight: 700; color: var(--text-main); }
+        .metric-sub { font-size: 0.85rem; color: var(--text-sec); display: block; margin-top: 2px; }
+
+        .check-list { list-style: none; padding: 0; }
+        .check-list li { margin-bottom: 6px; display: flex; align-items: flex-start; gap: 8px; }
+        .check-list li::before { content: "✓"; color: var(--success); font-weight: bold; flex-shrink: 0; }
+        .cross-list li::before { content: "✕"; color: var(--danger); font-weight: bold; flex-shrink: 0; }
+        .cross-list { list-style: none; padding: 0; }
+        .cross-list li { margin-bottom: 6px; display: flex; align-items: flex-start; gap: 8px; }
+
+        /* Recommendation Box */
+        .recommendation-box {
+            border: 2px solid var(--primary);
+            background: linear-gradient(to right, #f0f4ff, #ffffff);
+        }
+        
+        .rec-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rec-content { padding: 30px; }
+        
+        .reason-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            margin-top: 16px;
+            font-size: 1.1rem;
+        }
+        
+        .reason-title:first-child { margin-top: 0; }
+
+        .action-plan {
+            background: var(--bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .action-plan h4 { margin-bottom: 15px; color: var(--text-main); }
+        
+        .plan-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+        
+        .plan-num {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .plan-text { flex: 1; color: var(--text-main); }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            body { padding: 20px 10px; }
+            th, td { padding: 12px 10px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Google Play: Выбор категории</h1>
+    <div class="subtitle">Сравнительный анализ для Fendora MVP</div>
+
+    <!-- TABLE CARD -->
+    <div class="card">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Параметр</th>
+                        <th class="recommended-col">
+                            👨‍👧 Parenting<br>
+                            <span style="font-size: 0.8rem; font-weight: 400;">(Рекомендуем)</span>
+                        </th>
+                        <th>
+                             Lifestyle<br>
+                            <span style="font-size: 0.8rem; font-weight: 400;">(Альтернатива)</span>
+                        </th>
+                        <th>
+                            🔧 Tools<br>
+                            <span style="font-size: 0.8rem; font-weight: 400;">(Спорно)</span>
+                        </th>
+                        <th>
+                            ️ Maps & Nav<br>
+                            <span style="font-size: 0.8rem; font-weight: 400;">(Не рекомендуется)</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Соответствие продукту</strong><br><span style="font-size:0.85rem; color:var(--text-sec);">Отражает ли суть?</span></td>
+                        <td class="recommended-col">
+                            <div class="badge badge-perfect">⭐⭐⭐⭐⭐</div>
+                            <span class="metric-sub">Идеальное попадание</span>
+                        </td>
+                        <td>
+                            <div class="badge badge-medium">⭐⭐⭐</div>
+                            <span class="metric-sub">Частичное совпадение</span>
+                        </td>
+                        <td>
+                            <div class="badge badge-medium">⭐⭐⭐</div>
+                            <span class="metric-sub">Технически подходит</span>
+                        </td>
+                        <td>
+                            <div class="badge badge-weak">⭐⭐</div>
+                            <span class="metric-sub">Слабое соответствие</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Конкуренция</strong><br><span style="font-size:0.85rem; color:var(--text-sec);">Сколько аналогов?</span></td>
+                        <td class="recommended-col">
+                            <span style="color:var(--success); font-weight:700;">🟢 Низкая</span>
+                            <span class="metric-sub">~500-1000 приложений</span>
+                        </td>
+                        <td>
+                            <span style="color:var(--danger); font-weight:700;">🔴 Очень высокая</span>
+                            <span class="metric-sub">10,000+ приложений</span>
+                        </td>
+                        <td>
+                            <span style="color:var(--warning); font-weight:700;">🟡 Высокая</span>
+                            <span class="metric-sub">5,000+ приложений</span>
+                        </td>
+                        <td>
+                            <span style="color:var(--warning); font-weight:700;"> Средняя</span>
+                            <span class="metric-sub">~2,000 приложений</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>CTR и Конверсия</strong><br><span style="font-size:0.85rem; color:var(--text-sec);">Показатель установки</span></td>
+                        <td class="recommended-col">
+                            <span class="metric-value">25-40%</span>
+                            <span class="metric-sub">Высокий intent пользователя</span>
+                        </td>
+                        <td>
+                            <span class="metric-value">10-20%</span>
+                            <span class="metric-sub">Низкая релевантность</span>
+                        </td>
+                        <td>
+                            <span class="metric-value">15-25%</span>
+                            <span class="metric-sub">Средняя релевантность</span>
+                        </td>
+                        <td>
+                            <span class="metric-value">8-15%</span>
+                            <span class="metric-sub">Ошибочный intent</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Политические риски</strong><br><span style="font-size:0.85rem; color:var(--text-sec);">Stalkerware-классификация</span></td>
+                        <td class="recommended-col">
+                            <span style="color:var(--success); font-weight:700;"> Низкие</span>
+                            <span class="metric-sub">Google ожидает здесь трекеры</span>
+                        </td>
+                        <td>
+                            <span style="color:var(--warning); font-weight:700;">🟡 Средние</span>
+                            <span class="metric-sub">Требуется пояснение</span>
+                        </td>
+                        <td>
+                            <span style="color:var(--warning); font-weight:700;">🟡 Средние</span>
+                            <span class="metric-sub">«Tracker» триггерит бот-проверки</span>
+                        </td>
+                        <td>
+                            <span style="color:var(--danger); font-weight:700;">🔴 Высокие</span>
+                            <span class="metric-sub">Риск жалоб за несоответствие</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Плюсы</strong></td>
+                        <td class="recommended-col">
+                            <ul class="check-list">
+                                <li>Прямая ЦА (родители)</li>
+                                <li>Конкуренты (Life360, FindMyKids) здесь</li>
+                                <li>Легче попасть в Топ-10</li>
+                                <li>Высокий CTR по ключевым словам</li>
+                                <li><strong>Доступ к программе «Designed for Families»</strong></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="check-list">
+                                <li>Огромный объём трафика</li>
+                                <li>Гибкое позиционирование</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="check-list">
+                                <li>Ожидание функциональных утилит</li>
+                                <li>Хорошо для запросов "GPS tracker"</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="check-list">
+                                <li>Хорошо для запросов "Location"</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Минусы</strong></td>
+                        <td class="recommended-col">
+                            <ul class="cross-list">
+                                <li>Меньше "случайных" открытий</li>
+                                <li>Строгая модерация (возрастные рейты)</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="cross-list">
+                                <li>Очень сложно выделиться</li>
+                                <li>Низкая конверсия</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="cross-list">
+                                <li>Переполнена фонариками и очистками</li>
+                                <li>Сложно передать ценность "Заботы"</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="cross-list">
+                                <li>Пользователи ждут навигацию (как Яндекс)</li>
+                                <li>Высокий Bounce Rate</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- RECOMMENDATION CARD -->
+    <div class="card recommendation-box">
+        <div class="rec-header">
+            <span> Итоговая рекомендация</span>
+            <span style="background: white; color: var(--primary); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">Родительство</span>
+        </div>
+        <div class="rec-content">
+            
+            <div class="reason-title">1. Отраслевой стандарт</div>
+            <p>Все ключевые конкуренты (Life360, Findmykids, Qustodio, Google Family Link) находятся в категории <strong>Parenting</strong>. Пользователи, ищущие решение проблемы безопасности детей, идут именно сюда. Вы не хотите быть «странником» в категории «Инструменты» или «Карты».</p>
+
+            <div class="reason-title">2. Лучшая конверсия и CTR</div>
+            <p>Здесь самый высокий «Intent» (намерение). Человек, зашедший в категорию «Родительство», готов скачать приложение. В «Карты» он может зайти случайно, и ваша конверсия упадет в 3 раза.</p>
+
+            <div class="reason-title">3. Сниженные политические риски</div>
+            <p>Google Play жестко борется с «Stalkerware» (шпионскими программами). В категории «Parenting» трекеры легитимны и ожидаемы. В категории «Инструменты» слово «tracker» в описании может триггернуть автоматическую проверку на вредоносное ПО.</p>
+
+            <div class="action-plan">
+                <h4>✅ План действий для запуска</h4>
+                <div class="plan-item">
+                    <div class="plan-num">1</div>
+                    <div class="plan-text">В Google Play Console выберите категорию <strong>Parenting</strong>.</div>
+                </div>
+                <div class="plan-item">
+                    <div class="plan-num">2</div>
+                    <div class="plan-text">Укажите <strong>Content Rating</strong>: Teen (12+) или Parental Guidance.</div>
+                </div>
+                <div class="plan-item">
+                    <div class="plan-num">3</div>
+                    <div class="plan-text">В описании приложения делайте упор на «Родительский контроль с согласия», а не просто «слежка».</div>
+                </div>
+                <div class="plan-item">
+                    <div class="plan-num">4</div>
+                    <div class="plan-text">В Phase 2 обязательно подайте заявку на участие в программе <strong>«Designed for Families»</strong>, чтобы получить официальный бейдж доверия.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
