@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Задачник — Android-приложение</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#EDEEF1;
+  --surface:#FFFFFF;
+  --ink:#242A33;
+  --muted:#69717D;
+  --faint:#98A0AC;
+  --rule:#DADDE3;
+  --accent:#1F6F5C;
+  --accent-ink:#FFFFFF;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#15171B;
+    --surface:#1D2026;
+    --ink:#E6E9EE;
+    --muted:#A0A8B4;
+    --faint:#7B838F;
+    --rule:#2C3039;
+    --accent:#3E9C82;
+    --accent-ink:#06120E;
+  }
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:680px;margin:0 auto;padding-inline:20px;padding-block:56px 72px}
+.back{display:inline-block;font-size:13px;color:var(--faint);text-decoration:none;margin-bottom:20px}
+.back:hover{color:var(--accent)}
+header{display:flex;gap:18px;align-items:center;padding-bottom:22px;border-bottom:1px solid var(--rule)}
+.icon{
+  flex:0 0 auto;width:64px;height:64px;border-radius:16px;background:#1F6F5C;
+  display:grid;place-items:center;
+}
+h1{font-size:clamp(22px,4vw,28px);font-weight:700;letter-spacing:-.015em;margin:0;line-height:1.2}
+header p{margin:6px 0 0;color:var(--muted);font-size:14px;max-width:46ch}
+.cta{
+  display:flex;flex-wrap:wrap;align-items:center;gap:14px;
+  margin-top:26px;
+}
+a.download{
+  display:inline-block;background:var(--accent);color:var(--accent-ink);
+  text-decoration:none;font-weight:600;font-size:15px;
+  padding:14px 26px;border-radius:12px;
+  transition:transform .15s,opacity .15s;
+}
+a.download:hover{transform:translateY(-1px);opacity:.92}
+a.download:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.specs{font-size:13px;color:var(--faint)}
+.specs b{font-weight:600;color:var(--muted)}
+h2{font-size:15px;font-weight:600;margin:34px 0 12px;letter-spacing:.02em}
+ul.feat{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+ul.feat li{
+  background:var(--surface);border:1px solid var(--rule);border-radius:12px;
+  padding:14px 18px;font-size:14px;
+}
+ul.feat li b{display:block;font-weight:600;margin-bottom:2px}
+ul.feat li span{color:var(--muted)}
+ol.steps{margin:0;padding-left:22px;display:grid;gap:8px;font-size:14px;color:var(--muted)}
+ol.steps b{color:var(--ink);font-weight:600}
+.note{
+  margin-top:18px;background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);border-radius:12px;padding:14px 18px;
+  font-size:13.5px;color:var(--muted);
+}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);font-size:13px;color:var(--faint)}
+footer a{color:inherit}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="../">← Ко всем прототипам</a>
+
+  <header>
+    <div class="icon" aria-hidden="true">
+      <svg width="38" height="38" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="31" y="34" width="40" height="44" rx="5" fill="#FFFFFF" fill-opacity="0.18"/>
+        <rect x="31" y="34" width="40" height="44" rx="5" stroke="#FFFFFF" stroke-width="3.2"/>
+        <path d="M39 48l4.5 4.5L52 44" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M57 48h7" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round"/>
+        <path d="M39 63l4.5 4.5L52 59" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M57 63h7" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Задачник</h1>
+      <p>Личные задачи и заметки на Android. Всё хранится только на телефоне — ни аккаунта, ни сети, ни разрешений.</p>
+    </div>
+  </header>
+
+  <div class="cta">
+    <a class="download" href="Zadachnik-1.0.apk" download>Скачать APK · 1,3 МБ</a>
+    <div class="specs">
+      <b>Версия 1.0</b> · Android 8.0 и новее · подписан ключом разработчика
+    </div>
+  </div>
+
+  <h2>Что умеет</h2>
+  <ul class="feat">
+    <li>
+      <b>Задача и заметка в одной записи</b>
+      <span>Короткий заголовок плюс произвольный текст: детали, ссылки, мысли. Можно записать просто заметку без срока.</span>
+    </li>
+    <li>
+      <b>Срок в два касания</b>
+      <span>Чипы «Сегодня» и «Завтра» или выбор любой даты в календаре. Просроченное поднимается наверх и подсвечивается красным.</span>
+    </li>
+    <li>
+      <b>Группировка вместо свалки</b>
+      <span>Список сам делится на «Просрочено», «Сегодня», «Завтра», «Позже», «Без срока» и «Выполнено».</span>
+    </li>
+    <li>
+      <b>Важное — звёздочкой</b>
+      <span>Отметка прямо в списке, помеченные записи всегда в начале своей группы.</span>
+    </li>
+    <li>
+      <b>Фильтры и поиск</b>
+      <span>Активные, сегодня, важные, готово, все — и поиск по заголовкам и тексту заметок.</span>
+    </li>
+    <li>
+      <b>Свайп влево — удалить</b>
+      <span>С кнопкой «Вернуть» внизу экрана, если промахнулись.</span>
+    </li>
+    <li>
+      <b>Тёмная тема</b>
+      <span>Подхватывается из системных настроек.</span>
+    </li>
+  </ul>
+
+  <h2>Как поставить</h2>
+  <ol class="steps">
+    <li>Откройте эту страницу <b>с телефона</b> и нажмите «Скачать APK».</li>
+    <li>Откройте скачанный файл. Android спросит разрешение на установку из этого источника — <b>разрешите</b> (это одноразовое разрешение для браузера или файлового менеджера).</li>
+    <li>Нажмите «Установить». Значок «Задачник» появится на рабочем столе.</li>
+  </ol>
+
+  <div class="note">
+    Приложение не запрашивает ни одного разрешения и не умеет выходить в сеть. Записи лежат в приватной папке приложения в обычном JSON-файле; облачный бэкап отключён. Удаление приложения удаляет и записи — экспорта пока нет.
+  </div>
+
+  <footer>
+    Собрано из исходников на Kotlin + Jetpack Compose. Витрина — <a href="https://github.com/dandklop-dev/work">github.com/dandklop-dev/work</a>
+  </footer>
+
+</div>
+</body>
+</html>
