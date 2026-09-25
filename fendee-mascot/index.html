@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fendi в Fendee</title>
+<meta name="description" content="ТЗ для дизайнера: где в детском приложении Fendee появляется маскот Fendi, что он делает и что нужно отрисовать. Два кликабельных прототипа.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F3F5F6;
+  --surface:#FFFFFF;
+  --ink:#1F262D;
+  --muted:#5E6873;
+  --faint:#8D96A0;
+  --rule:#DDE2E6;
+  --accent:#00808C;
+  --accent-soft:#DCEFF1;
+  --p1:#00808C;
+  --p2:#8A6BD1;
+  --no:#A3ABB4;
+  --warn:#B4541B;
+  --warn-soft:#FBEDE3;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1040px;margin:0 auto;padding:48px 20px 80px}
+@media (max-width:600px){.wrap{padding:28px 16px 64px}}
+a{color:var(--accent)}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:600}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.1;letter-spacing:-.02em;margin:10px 0 12px;font-weight:700}
+.lead{font-size:17px;color:var(--muted);max-width:62ch;margin:0}
+.meta{margin-top:14px;font-size:13px;color:var(--faint)}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:26px 0 8px}
+nav.toc a{font-size:13px;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--rule);padding:5px 11px;border-radius:999px}
+nav.toc a:hover{border-color:var(--accent);color:var(--accent)}
+section{margin-top:56px}
+h2{font-size:24px;letter-spacing:-.01em;margin:0 0 6px;line-height:1.25}
+h2 small{font-size:13px;color:var(--faint);font-weight:500;margin-left:8px;letter-spacing:0}
+h3{font-size:16px;margin:26px 0 8px}
+.sub{color:var(--muted);margin:0 0 20px;max-width:70ch}
+p{margin:0 0 12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:18px}
+.card b{display:block;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.card p{margin:0;font-size:14.5px}
+.idea{background:linear-gradient(135deg,#FFF4EA,#FFFFFF 60%);border-color:#F6D6BD}
+.idea b{color:#C85A16}
+
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.step{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:12px 12px 12px;position:relative}
+.step .n{font-size:11px;color:var(--faint);font-weight:600;letter-spacing:.05em}
+.step .t{font-size:14px;font-weight:600;line-height:1.3;margin:3px 0 8px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.03em}
+.tag.p1{background:var(--accent-soft);color:var(--p1)}
+.tag.p2{background:#EEE8FA;color:var(--p2)}
+.tag.no{background:#EEF0F2;color:var(--no)}
+.step.on{border-color:#9FD2D7}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;font-size:13px;color:var(--muted)}
+
+/* table */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--rule);border-radius:14px;overflow:hidden;font-size:14px}
+.tbl th,.tbl td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--rule)}
+.tbl th{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);font-weight:600;background:#FAFBFB}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child{font-weight:600;white-space:nowrap}
+.tbl .q{color:var(--muted);font-style:italic}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px}
+@media (max-width:760px){
+  .tbl.stack thead{display:none}
+  .tbl.stack,.tbl.stack tbody,.tbl.stack tr,.tbl.stack td{display:block;width:100%}
+  .tbl.stack tr{border-bottom:1px solid var(--rule);padding:8px 0}
+  .tbl.stack tr:last-child{border-bottom:0}
+  .tbl.stack td{border:0;padding:4px 14px}
+  .tbl.stack td::before{content:attr(data-h);display:block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--faint);font-weight:600}
+  .tbl.stack td:first-child{white-space:normal;font-size:15px;padding-top:8px}
+  .tbl.stack td:first-child::before{display:none}
+}
+.mini{display:inline-block;width:64px;height:68px;vertical-align:middle}
+.rules{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.rules li{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:12px 14px 12px 40px;position:relative;font-size:14.5px}
+.rules li::before{content:"";position:absolute;left:15px;top:18px;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.rules li.warn::before{background:var(--warn)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.two{grid-template-columns:1fr}}
+.two .card ul{margin:6px 0 0;padding-left:18px;font-size:14.5px}
+.two .card li{margin:3px 0}
+.off b{color:var(--faint)}
+
+/* prototypes */
+.protos{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+@media (max-width:860px){.protos{grid-template-columns:1fr}}
+.proto{background:var(--surface);border:1px solid var(--rule);border-radius:18px;padding:18px 18px 20px}
+.proto h3{margin:0 0 4px}
+.proto .sub{font-size:14px;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.chip{font:500 13px/1 'Inter',sans-serif;border:1px solid var(--rule);background:#fff;color:var(--ink);padding:8px 11px;border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip:focus-visible,.ph button:focus-visible{outline:2px solid #F37B2A;outline-offset:2px}
+.fit{width:100%;max-width:380px;margin:0 auto;position:relative}
+.device{width:380px;height:820px;border-radius:46px;background:#1B1F24;padding:10px;transform-origin:top left;box-shadow:0 18px 40px rgba(20,30,40,.18)}
+.caption{margin-top:14px;background:#F7F9F9;border:1px solid var(--rule);border-radius:12px;padding:12px 14px;font-size:14px;min-height:88px}
+.caption b{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.caption .prio{float:right;margin-left:8px}
+.hint{font-size:12.5px;color:var(--faint);margin-top:8px;text-align:center}
+
+/* phone screen (Fendee UI, from Figma) */
+.ph{width:360px;height:800px;border-radius:36px;overflow:hidden;background:#fff;position:relative;font-family:'Poppins',sans-serif;color:#333;user-select:none;-webkit-user-select:none}
+.ph *{box-sizing:border-box}
+.ph .sb{position:absolute;top:0;left:0;right:0;height:36px;display:flex;justify-content:space-between;align-items:center;padding:6px 26px 0 28px;font-size:11px;font-weight:500;z-index:5}
+.ph .sb svg{height:11px}
+.ph .scr{position:absolute;inset:0;animation:scrIn .28s ease}
+@keyframes scrIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
+.ph .bar{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center}
+.ph .bar i{width:108px;height:4px;border-radius:4px;background:#1B1F24;opacity:.85}
+.ph .ttl-l{position:absolute;top:44px;left:24px;font-size:18px;font-weight:600}
+.ph .opt{position:absolute;left:24px;right:24px;height:74px;border-radius:14px;background:#fff;box-shadow:0 2px 10px rgba(30,40,60,.10);display:flex;align-items:center;gap:14px;padding:0 16px;cursor:pointer;border:0;text-align:left;font-family:inherit;color:inherit}
+.ph .opt .ic{width:36px;height:36px;border-radius:50%;background:#E7DFF9;display:grid;place-items:center;flex:none}
+.ph .opt .ic svg{width:18px;height:18px;stroke:#5A48B0}
+.ph .opt b{display:block;font-weight:500;font-size:14px}
+.ph .opt span{display:block;font-size:12px;color:#656D77;line-height:1.35}
+.ph .opt .chev{margin-left:auto;width:16px;height:16px;stroke:#333;flex:none}
+.ph .prog{position:absolute;top:40px;left:20px;right:20px;display:flex;gap:6px}
+.ph .prog i{flex:1;height:3px;border-radius:3px;background:#C6E6E9}
+.ph .prog i.f{background:#00808C}
+.ph .ico{position:absolute;left:50%;transform:translateX(-50%);width:52px;height:52px;border-radius:50%;background:#EAF4F5;display:grid;place-items:center}
+.ph .ico svg{width:24px;height:24px;stroke:#00808C}
+.ph .h{position:absolute;left:24px;right:24px;text-align:center;font-size:20px;font-weight:600;line-height:1.3}
+.ph .tx{position:absolute;left:28px;right:28px;text-align:center;font-size:14.5px;color:#656D77;line-height:1.5}
+.ph .btn{position:absolute;left:20px;right:20px;height:44px;border-radius:22px;border:0;background:#00808C;color:#fff;font:500 14px 'Poppins',sans-serif;cursor:pointer}
+.ph .btn.purple{background:#6A5ACD}
+.ph .lnk{position:absolute;left:0;right:0;text-align:center;font-size:14px;font-weight:500;color:#00808C;background:none;border:0;cursor:pointer;font-family:inherit}
+.ph .mock{position:absolute;left:24px;right:24px;border:1.5px dashed #A9B4BB;border-radius:12px;padding:10px 0;font-size:12.5px;text-align:center}
+.ph .mock .hd{font-size:11px;color:#656D77;padding:2px 12px 8px}
+.ph .mock .row{padding:8px 16px;text-align:left;color:#333}
+.ph .mock .row.c{text-align:center}
+.ph .mock .row.hl{background:#BFE7EA;color:#0A4F57;font-weight:500}
+.ph .mock .sk{height:7px;border-radius:4px;background:#E4E9EC;margin:6px auto;width:70%}
+.ph .mock .sk.s{width:45%}
+.ph .mock .split{display:flex}
+.ph .mock .split div{flex:1;padding:9px 0}
+.ph .mock .tg{display:flex;justify-content:space-between;align-items:center}
+.ph .mock .tg i{width:28px;height:15px;border-radius:9px;background:#0A7F8A;position:relative}
+.ph .mock .tg i::after{content:"";position:absolute;right:2px;top:2px;width:11px;height:11px;border-radius:50%;background:#fff}
+.ph .fz{position:absolute;display:flex;justify-content:center;align-items:flex-end;pointer-events:none}
+.ph .bub{position:absolute;background:#fff;border-radius:16px;padding:10px 14px;font-size:13px;line-height:1.4;box-shadow:0 4px 16px rgba(30,40,60,.13);color:#333;animation:bubIn .35s .25s ease both}
+.ph .bub::after{content:"";position:absolute;width:14px;height:14px;background:#fff;transform:rotate(45deg);border-radius:2px}
+.ph .bub.dn::after{bottom:-6px;left:var(--ax,50%)}
+.ph .bub.lf::after{left:-6px;top:var(--ay,50%)}
+@keyframes bubIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+/* main */
+.ph.main{background:#F1F7F8}
+.ph .ava{position:absolute;top:46px;right:20px;width:40px;height:40px;border-radius:50%;background:#E7DFF9;display:grid;place-items:center}
+.ph .ava svg{width:18px;height:18px;stroke:#5A48B0}
+.ph .lbl{position:absolute;top:142px;left:0;right:0;text-align:center;font-size:14px;font-weight:500;color:#656D77}
+.ph .sos{position:absolute;top:182px;left:80px;width:200px;height:200px;border-radius:50%;background:#F7DEDE;--p:0}
+.ph .sos .pr{position:absolute;inset:0;border-radius:50%;background:conic-gradient(#E84742 calc(var(--p) * 1turn),transparent 0);-webkit-mask:radial-gradient(circle,transparent 86px,#000 87px);mask:radial-gradient(circle,transparent 86px,#000 87px)}
+.ph .sos button{position:absolute;inset:16px;border-radius:50%;border:0;background:#E84742;color:#fff;font:600 48px/1 'Poppins',sans-serif;letter-spacing:.02em;cursor:pointer;box-shadow:0 8px 22px rgba(232,71,66,.35);touch-action:none;display:grid;place-items:center}
+.ph .sos button svg{width:78px;height:78px;stroke:#fff}
+.ph .sos button:active{transform:scale(.98)}
+.ph .stc{position:absolute;left:20px;right:20px;bottom:44px;height:68px;border-radius:16px;background:#fff;box-shadow:0 4px 16px rgba(30,40,60,.10);padding:12px 16px}
+.ph .stc b{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.ph .stc b i{width:8px;height:8px;border-radius:50%;background:var(--dot)}
+.ph .stc span{display:block;font-size:13px;color:#656D77;margin-top:2px}
+
+/* fox animations */
+.fox{overflow:visible;display:block}
+@media (prefers-reduced-motion:no-preference){
+  .fox .fx-body{animation:fxBob 3.2s ease-in-out infinite}
+  .fox .fx-tail.flick{animation:fxFlick 1.5s ease-in-out infinite}
+  .fox .fx-tail.slow{animation:fxFlick 3.2s ease-in-out infinite}
+  .fox .fx-tail.fade{animation:fxFade 2.6s ease-in-out infinite}
+  .fox .fx-wave{animation:fxWave 6s ease-in-out infinite}
+  .fox .fx-wave.often{animation-duration:2.6s}
+  .fox .fx-eyes{animation:fxBlink 5s infinite}
+  .fox.jump{animation:fxJump .9s cubic-bezier(.3,1.4,.5,1) 1}
+  .fox .fx-phone{animation:fxPhone 2.4s ease-in-out infinite}
+  .fox .fx-spark{animation:fxSpark 1.6s ease-in-out infinite}
+}
+.fox .fx-tail{transform-origin:110px 176px}
+.fox .fx-wave{transform-origin:112px 142px}
+.fox .fx-phone{transform-origin:112px 142px}
+.fox .fx-eyes{transform-origin:90px 88px}
+@keyframes fxBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+@keyframes fxFlick{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(-4deg) scale(1.03,.97)}}
+@keyframes fxFade{0%,100%{opacity:.55}50%{opacity:.32}}
+@keyframes fxWave{0%,22%,100%{transform:rotate(0)}6%,16%{transform:rotate(-18deg)}11%{transform:rotate(5deg)}}
+@keyframes fxBlink{0%,95%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@keyframes fxJump{0%{transform:translateY(0)}35%{transform:translateY(-16px)}70%{transform:translateY(0)}}
+@keyframes fxPhone{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+@keyframes fxSpark{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.fox .fx-spark{transform-box:fill-box;transform-origin:center}
+
+/* references */
+.refs{display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:start}
+@media (max-width:760px){.refs{grid-template-columns:1fr}}
+figure{margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:10px}
+figure img{width:100%;display:block;border-radius:8px}
+figcaption{font-size:13px;color:var(--muted);padding:8px 4px 2px}
+.now{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.now img{border:1px solid var(--rule)}
+.qs{counter-reset:q;list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.qs li{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:14px 16px 14px 52px;position:relative;font-size:14.5px}
+.qs li::before{counter-increment:q;content:counter(q);position:absolute;left:16px;top:13px;width:24px;height:24px;border-radius:50%;background:var(--warn-soft);color:var(--warn);font-weight:700;font-size:13px;display:grid;place-items:center}
+.qs b{display:block;margin-bottom:2px}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-size:13px;color:var(--faint)}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Fendora · детское приложение Fendee · MVP</div>
+  <h1>Маскот Fendi в Fendee</h1>
+  <p class="lead">ТЗ для дизайнера: на каких экранах детского приложения появляется лисёнок Fendi, что он там делает и что нужно отрисовать. Здесь же два кликабельных прототипа.</p>
+  <div class="meta">25 сентября 2026 · предложение для обсуждения · макет — файл Fendora (Android), раздел «Fendee · заготовки»</div>
+  <nav class="toc" aria-label="Разделы">
+    <a href="#short">Коротко</a><a href="#where">Где появляется</a><a href="#proto">Прототипы</a><a href="#screens">Экраны подробно</a><a href="#tail">Главный экран</a><a href="#draw">Что отрисовать</a><a href="#refs">Референсы</a><a href="#questions">Открытые вопросы</a>
+  </nav>
+</header>
+
+<section id="short">
+  <h2>Коротко</h2>
+  <p class="sub">В MVP у Fendee нет квестов, таймера и наград: только подключение к родителю, разрешения и экран с кнопкой SOS. Поэтому маскот живёт там, где ребёнку действительно нужна помощь.</p>
+  <div class="cards">
+    <div class="card"><b>Где</b><p>Онбординг: знакомство, «Телефон подключён», раскрытие данных, разрешения, «Всё готово». И главный экран — вместо нынешней иллюстрации с детьми. На вводе кода и сканере QR его нет.</p></div>
+    <div class="card"><b>Зачем</b><p>Ребёнок видит в приложении того же героя, что на баннерах в сторе. Fendi помогает пройти семь системных экранов с разрешениями, где отвалиться проще всего. А статус связи становится понятен без чтения.</p></div>
+    <div class="card idea"><b>Главная идея</b><p>Хвост-энергия из концепта в MVP показывает не экранное время, которого пока нет, а связь с родителями. Горит — на связи. Тускнеет — тебя не видно. Голубой — нет сети. Серый — не на связи.</p></div>
+    <div class="card"><b>Объём</b><p>9 поз и 5 вариантов хвоста на прозрачном фоне, со слоями. Для MVP хватит статики, анимация — отдельной задачей. Аксессуары к разрешениям — если останется время.</p></div>
+  </div>
+
+  <h3>Что берём из концепта, а что откладываем</h3>
+  <div class="two">
+    <div class="card"><b>Берём в MVP</b>
+      <ul>
+        <li>Образ: лисёнок, куртка с эмблемой-часами, огненный хвост — как на баннерах сторов</li>
+        <li>Хвост как индикатор. Меняется смысл: теперь он показывает связь</li>
+        <li>Эмоции: радость, удивление, спокойствие, тревога</li>
+        <li>Роль проводника: объясняет и ведёт, а не развлекает</li>
+      </ul>
+    </div>
+    <div class="card off"><b>Откладываем до появления механик</b>
+      <ul>
+        <li>Экранное время, «энергия для игры», спящий лисёнок при блокировке</li>
+        <li>Квесты, кристаллы, магазин наград</li>
+        <li>Уровни и рост персонажа, костюмы по активностям</li>
+        <li>Fendi в родительском приложении как «эмоциональный интерфейс»</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="where">
+  <h2>Где он появляется</h2>
+  <p class="sub">Нумерация как в макете, раздел «Fendee · заготовки → Пэйринг». Онбординг часто проходит родитель с телефоном ребёнка в руках. Поэтому Fendi обращается к ребёнку, но так, чтобы взрослому не было неловко: коротко и без сюсюканья.</p>
+  <div class="flow">
+    <div class="step"><div class="n">01</div><div class="t">Splash</div><span class="tag p2">P2</span></div>
+    <div class="step on"><div class="n">02</div><div class="t">Подключение · выбор способа</div><span class="tag p1">P1 · знакомство</span></div>
+    <div class="step"><div class="n">03</div><div class="t">Ввод кода</div><span class="tag no">нет</span></div>
+    <div class="step"><div class="n">04</div><div class="t">Сканирование QR</div><span class="tag no">нет</span></div>
+    <div class="step on"><div class="n">05</div><div class="t">Телефон подключён</div><span class="tag p1">P1 · радость</span></div>
+    <div class="step on"><div class="n">06</div><div class="t">Раскрытие информации</div><span class="tag p1">P1 · молча рядом</span></div>
+    <div class="step on"><div class="n">07–12</div><div class="t">Шесть разрешений</div><span class="tag p1">P1 · показывает</span></div>
+    <div class="step on"><div class="n">13</div><div class="t">Настройка завершена</div><span class="tag p1">P1 · праздник</span></div>
+    <div class="step on"><div class="n">14</div><div class="t">Главный экран · 5 состояний</div><span class="tag p1">P1 · статус</span></div>
+    <div class="step"><div class="n">—</div><div class="t">Мой профиль</div><span class="tag no">нет</span></div>
+  </div>
+  <div class="legend"><span><span class="tag p1">P1</span> нужно в MVP</span><span><span class="tag p2">P2</span> если останется время</span><span><span class="tag no">нет</span> маскота нет</span></div>
+  <p class="sub" style="margin-top:16px">Почему не везде. На вводе кода и сканере QR человек смотрит на цифры и в камеру, половину экрана занимает клавиатура или видоискатель — персонаж там только мешает. Профиль — это форма с полями, маскот не добавит ей смысла.</p>
+</section>
+
+<section id="proto">
+  <h2>Прототипы <small>кликабельные</small></h2>
+  <p class="sub">Экраны собраны по макету: те же тексты, цвета и шрифт Poppins. Fendi здесь — векторная схема, чтобы показать место, размер, позу и поведение хвоста. Это не финальная отрисовка: персонаж рисуется по концепту и баннерам сторов.</p>
+  <div class="protos">
+    <div class="proto">
+      <h3>1 · Онбординг</h3>
+      <p class="sub">Жмите кнопки на экране или выбирайте шаг ниже. На разрешениях Fendi показывает лапой на пункт, который надо выбрать в системном окне.</p>
+      <div class="chips" id="onbChips" role="group" aria-label="Шаг онбординга"></div>
+      <div class="fit" id="onbFit"><div class="device"><div class="ph" id="onb"></div></div></div>
+      <div class="caption" id="onbCap" aria-live="polite"></div>
+    </div>
+    <div class="proto">
+      <h3>2 · Главный экран</h3>
+      <p class="sub">Переключайте состояния связи. Кнопку SOS можно зажать на 3 секунды — Fendi перейдёт в состояние «Сигнал отправлен».</p>
+      <div class="chips" id="mainChips" role="group" aria-label="Состояние главного экрана"></div>
+      <div class="fit" id="mainFit"><div class="device"><div class="ph main" id="main"></div></div></div>
+      <div class="caption" id="mainCap" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <h2>Экраны подробно</h2>
+  <p class="sub">Реплики — черновик для обсуждения, финальный текст согласуем отдельно. Коды поз (F-01…) — из раздела «Что отрисовать».</p>
+  <div class="tscroll">
+  <table class="tbl stack">
+    <thead><tr><th>Экран</th><th>Что делает Fendi</th><th>Поза</th><th>Хвост</th><th>Реплика</th><th>Приоритет</th></tr></thead>
+    <tbody>
+      <tr><td data-h="Экран">01 Splash</td><td data-h="Что делает">Выглядывает из-за логотипа-щита на полсекунды и прячется</td><td data-h="Поза">Голова F-01</td><td data-h="Хвост">—</td><td data-h="Реплика">—</td><td data-h="Приоритет"><span class="tag p2">P2</span></td></tr>
+      <tr><td data-h="Экран">02 Подключение</td><td data-h="Что делает">Знакомится и говорит, что сейчас будет. Стоит под карточками способов, в пустой части экрана</td><td data-h="Поза">F-01 машет лапой, радость</td><td data-h="Хвост">Полный</td><td data-h="Реплика" class="q">«Привет! Я Фенди. Давай подключим твой телефон к маме или папе»</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Экран">05 Телефон подключён</td><td data-h="Что делает">Радуется первому шагу. Заменяет галочку над заголовком</td><td data-h="Поза">F-02 прыжок, лапы вверх</td><td data-h="Хвост">Вспышка → полный</td><td data-h="Реплика">— (хватает заголовка)</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Экран">06 Раскрытие информации</td><td data-h="Что делает">Молча сидит внизу, не отвлекает от текста</td><td data-h="Поза">F-03 сидит, спокойный</td><td data-h="Хвост">Полный, без мерцания</td><td data-h="Реплика">Нет. Этот текст — раскрытие данных по правилам Google Play, его нельзя пересказывать или прятать за персонажем</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Экран">07–12 Разрешения</td><td data-h="Что делает">Стоит под макетом системного окна и показывает лапой на подсвеченный пункт, чтобы ребёнок нажал «Разрешить», а не «Только в этот раз». Иконка разрешения вверху остаётся</td><td data-h="Поза">F-04 показывает вверх. P2 — аксессуар по смыслу: метка, рюкзак, кроссовки, колокольчик, будильник, батарейка</td><td data-h="Хвост">Полный</td><td data-h="Реплика">Нет — текст уже на экране</td><td data-h="Приоритет"><span class="tag p1">P1</span> <span class="tag p2">аксессуары P2</span></td></tr>
+      <tr><td data-h="Экран">13 Настройка завершена</td><td data-h="Что делает">Празднует. Заменяет иллюстрацию с детьми</td><td data-h="Поза">F-02 + искры</td><td data-h="Хвост">Максимум, вспышка</td><td data-h="Реплика" class="q">«Я на связи!» (по желанию)</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Экран">14 Главный экран</td><td data-h="Что делает">Показывает статус связи позой и хвостом. Заменяет иллюстрацию с детьми во всех пяти состояниях — подробно в следующем разделе</td><td data-h="Поза">F-05 … F-09</td><td data-h="Хвост">По состоянию</td><td data-h="Реплика">Нет — статус в карточке</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <ul class="rules">
+    <li>На экране главный — текст. Fendi не перекрывает заголовки, макеты системных окон и кнопки. На высоте 640 dp он уменьшается до 120 dp, реплика-пузырь скрывается.</li>
+    <li class="warn">«Не сейчас» на разрешениях — Fendi не грустит и не уговаривает. Давить на ребёнка жалостью к персонажу нельзя: это манипуляция, и в детской категории стора такое заметят.</li>
+    <li>Характер из концепта, но без хитрости: любопытный друг и помощник. Позы «Хитрость» и «Упрямство» из листа эмоций в MVP не используем — это и есть риск образа лиса, о котором написано в документе с концептом.</li>
+  </ul>
+</section>
+
+<section id="tail">
+  <h2>Главный экран: хвост показывает связь</h2>
+  <p class="sub">Пять состояний из макета («Состояния главного экрана»). Текст в карточке не меняется. Fendi стоит на месте иллюстрации с детьми, карточка статуса перекрывает ему ноги — как сейчас у детей.</p>
+  <div class="tscroll">
+  <table class="tbl stack">
+    <thead><tr><th>Состояние</th><th></th><th>Fendi</th><th>Хвост</th><th>Движение</th></tr></thead>
+    <tbody>
+      <tr><td data-h="Состояние">● Ты на связи</td><td data-h="Вид"><span class="mini" data-fox='{"mood":"calm","arms":"down","tail":"full"}'></span></td><td data-h="Fendi">F-05. Спокойно улыбается, время от времени машет лапой</td><td data-h="Хвост">Полный тёплый огонь</td><td data-h="Движение">Дыхание, моргание, хвост мерцает, взмах лапой примерно раз в 6 секунд</td></tr>
+      <tr><td data-h="Состояние">● Сигнал отправлен</td><td data-h="Вид"><span class="mini" data-fox='{"mood":"serious","arms":"chest","tail":"bright"}'></span></td><td data-h="Fendi">F-06. Собран, лапа на груди — «я рядом». Не улыбается во весь рот, никаких конфетти</td><td data-h="Хвост">Яркий и ровный</td><td data-h="Движение">Только дыхание. Хвост не мерцает, реакций на тап нет</td></tr>
+      <tr><td data-h="Состояние">● Тебя не видно</td><td data-h="Вид"><span class="mini" data-fox='{"mood":"worried","arms":"search","tail":"dim","look":[3,0]}'></span></td><td data-h="Fendi">F-07. Ищет: лапа козырьком, смотрит в сторону</td><td data-h="Хвост">Тусклый, полупрозрачный</td><td data-h="Движение">Хвост медленно гаснет и разгорается</td></tr>
+      <tr><td data-h="Состояние">● Нет связи</td><td data-h="Вид"><span class="mini" data-fox='{"mood":"focused","arms":"phone","tail":"cold","look":[2,-3]}'></span></td><td data-h="Fendi">F-08. Поднял телефон над головой, ловит сеть</td><td data-h="Хвост">Холодный голубой</td><td data-h="Движение">Телефон покачивается</td></tr>
+      <tr><td data-h="Состояние">● Ты не на связи</td><td data-h="Вид"><span class="mini" data-fox='{"mood":"worried","arms":"down","tail":"off","ears":"down"}'></span></td><td data-h="Fendi">F-09. Встревожен, уши прижаты</td><td data-h="Хвост">Погасший серый</td><td data-h="Движение">Нет</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <ul class="rules">
+    <li>Главное на экране — кнопка SOS. Fendi стоит ниже, не заходит на её кольцо, отступ не меньше 24 dp. Красный в персонаже не используем, пульсирует только кнопка.</li>
+    <li>Статус всегда дублируется текстом в карточке. Хвост — не единственный носитель смысла: его не различит ребёнок с дальтонизмом и не озвучит TalkBack.</li>
+    <li class="warn">Спящего Fendi в MVP нет. В концепте сон означает «время вышло» — этот образ бережём для будущей блокировки экрана. А на экране «Нет связи» спящий лисёнок читался бы как «всё выключено, можно не волноваться». Для ребёнка в тревожной ситуации это опасная подсказка.</li>
+    <li>Тап по Fendi — P2: короткая реакция (подпрыгнул, хвост вспыхнул), никуда не ведёт. В состоянии «Сигнал отправлен» тап выключен.</li>
+  </ul>
+</section>
+
+<section id="draw">
+  <h2>Что отрисовать</h2>
+  <div class="tscroll">
+  <table class="tbl stack">
+    <thead><tr><th>Код</th><th>Поза и эмоция</th><th>Где</th><th>Приоритет</th></tr></thead>
+    <tbody>
+      <tr><td data-h="Код">F-01</td><td data-h="Поза">Машет лапой, радость. Отдельно — голова для splash</td><td data-h="Где">02, 01</td><td data-h="Приоритет"><span class="tag p1">P1</span> (голова P2)</td></tr>
+      <tr><td data-h="Код">F-02</td><td data-h="Поза">Прыжок, обе лапы вверх, восторг, искры</td><td data-h="Где">05, 13</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">F-03</td><td data-h="Поза">Сидит, спокойный, внимательно слушает</td><td data-h="Где">06</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">F-04</td><td data-h="Поза">Стоит, показывает лапой вверх, дружелюбный</td><td data-h="Где">07–12</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">F-05</td><td data-h="Поза">Стоит, спокойная улыбка (лапа для взмаха — отдельным слоем)</td><td data-h="Где">14 · на связи</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">F-06</td><td data-h="Поза">Собран, лапа на груди, серьёзный и тёплый взгляд</td><td data-h="Где">14 · сигнал отправлен</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">F-07</td><td data-h="Поза">Лапа козырьком, смотрит в сторону, немного растерян</td><td data-h="Где">14 · тебя не видно</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">F-08</td><td data-h="Поза">Держит телефон над головой, сосредоточен</td><td data-h="Где">14 · нет связи</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">F-09</td><td data-h="Поза">Стоит, уши прижаты, встревожен</td><td data-h="Где">14 · не на связи</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">Хвост ×5</td><td data-h="Поза">Полный · яркий ровный · тусклый · холодный голубой · погасший серый. Отдельным слоем, чтобы ставился к любой позе</td><td data-h="Где">все</td><td data-h="Приоритет"><span class="tag p1">P1</span></td></tr>
+      <tr><td data-h="Код">Аксессуары ×6</td><td data-h="Поза">Метка на карте, рюкзак, кроссовки, колокольчик, будильник, батарейка — к F-04</td><td data-h="Где">07–12</td><td data-h="Приоритет"><span class="tag p2">P2</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Технические требования</h3>
+  <ul class="rules">
+    <li><b>Тот же персонаж, что на баннерах сторов:</b> модель, пропорции, куртка с эмблемой-часами, огненный хвост. Рендер — в той же 3D-мультяшной манере, что иллюстрации детей, которые уже есть в макете.</li>
+    <li class="warn"><b>Светлый фон.</b> Концепт нарисован на тёмно-синем, а у Fendee фон светлый (#F1F7F8, карточки белые). Свечение хвоста и искры нужно перерисовать под светлый фон: без тёмного ореола вокруг пламени. Свечение даём насыщенным цветом огня и мягкой цветной тенью. Фон PNG — прозрачный.</li>
+    <li><b>Размеры при ширине 360 dp:</b> онбординг и разрешения — зона около 160×160 dp; «Подключён» и «Всё готово» — до 220 dp в высоту; главный экран — около 240×240 dp. Экспорт PNG или WebP @1x–@3x.</li>
+    <li><b>Слои в исходнике:</b> тело, голова (эмоция), лапы, хвост, аксессуар — раздельно. Тогда хвост меняется без перерисовки позы, а потом из тех же слоёв собирается анимация: Rive или Lottie, для Flutter есть пакеты под оба.</li>
+    <li><b>MVP можно выпустить на статике.</b> Покачивание и смену состояния делаем кодом (плавный переход 200–300 мс). Анимация хвоста и взмахов — отдельная задача.</li>
+    <li><b>Доступность:</b> иллюстрация декоративная, TalkBack её не озвучивает. Весь смысл продублирован текстом.</li>
+  </ul>
+</section>
+
+<section id="refs">
+  <h2>Референсы</h2>
+  <div class="refs">
+    <figure>
+      <img src="img/concept.jpg" alt="Лист концепта Fendi: состояния заряжен, разряжен, гео-режим, новый уровень, сценарии в приложениях и эмоции" loading="lazy">
+      <figcaption>Концепт Fendi из документа с маскотами (вариант 1, согласован). Образ, эмоции и хвост берём отсюда. Интерфейсные сцены — таймер, квесты, магазин — не для MVP.</figcaption>
+    </figure>
+    <figure>
+      <div class="now">
+        <img src="img/now-join.jpg" alt="Сейчас: 02 Подключение" loading="lazy">
+        <img src="img/now-geo.jpg" alt="Сейчас: 07 Разрешение геолокации" loading="lazy">
+        <img src="img/now-done.jpg" alt="Сейчас: 13 Настройка завершена" loading="lazy">
+        <img src="img/now-main.jpg" alt="Сейчас: 14 Главный экран" loading="lazy">
+      </div>
+      <figcaption>Как сейчас в макете: 02, 07, 13 и 14. На 13 и 14 иллюстрацию с детьми заменяет Fendi. В родительском приложении дети остаются.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="questions">
+  <h2>Открытые вопросы</h2>
+  <ol class="qs">
+    <li><b>Имя.</b> Лисёнок Fendi и приложение Fendee произносятся одинаково. Если так задумано и лисёнок — лицо приложения, то хорошо, но тогда он не называет приложение по имени. Кроме того, FENDI — известная модная марка: прежде чем имя попадёт в интерфейс и в стор, стоит показать его юристу. В прототипе имя звучит в одной реплике, её легко убрать.</li>
+    <li><b>Пропущенные разрешения.</b> Сейчас после «Не сейчас» всё равно показывается «Всё готово». Предлагаю отдельное состояние «Почти готово» со списком того, что не включено. Это решение продукта, в задачу дизайнеру пока не входит.</li>
+    <li><b>Сколько реплик.</b> Предлагаю в MVP две — знакомство и финал: меньше текста на локализацию и меньше шума. Нужно больше?</li>
+    <li><b>Родительское приложение.</b> На слайде онбординга «Ребёнку нужен Fendee» Fendi мог бы стать лицом детского приложения — это связка со стором. Делаем в этой итерации или позже?</li>
+  </ol>
+</section>
+
+<footer>
+  Прототип собран по макету Fendora (Android). Fendi в прототипах — схема для раскладки, не отрисовка. · <a href="../">Все материалы</a>
+</footer>
+
+</div>
+
+<script>
+/* ---------- Fendi: schematic vector fox for layout prototypes ---------- */
+const TAILS={
+  full:  {a:'#FF5A1F',b:'#FFC23D',c:'#FFE9A8',glow:'rgba(255,128,32,.55)',op:1,  anim:'flick'},
+  bright:{a:'#FF4A12',b:'#FFB020',c:'#FFF3C4',glow:'rgba(255,110,20,.8)', op:1,  anim:''},
+  dim:   {a:'#EE9A5C',b:'#F8D2A4',c:'#FFF1DF',glow:'rgba(0,0,0,0)',       op:.55,anim:'fade'},
+  cold:  {a:'#3E97E0',b:'#9FD4FF',c:'#E6F5FF',glow:'rgba(62,151,224,.5)', op:.95,anim:'slow'},
+  off:   {a:'#8F99A4',b:'#C9CFD6',c:'#ECEFF2',glow:'rgba(0,0,0,0)',       op:.6, anim:''}
+};
+let foxN=0;
+function fox(o={},size=160){
+  const {mood='happy',arms='down',tail='full',look=[0,0],ears='up',sparkle=false,wave=''}=o;
+  const T=TAILS[tail], id='g'+(++foxN);
+  const O='#F37B2A',IN='#FFD0AE',CR='#FFF3E6',DK='#2A1810',JK='#1E6F78',JKD='#175A62',PW='#5A3A2A',TIP='#7A3E22';
+  const [lx,ly]=look;
+  const A=(x1,y1,x2,y2)=>`<path d="M${x1},${y1} L${x2},${y2}" stroke="${JK}" stroke-width="12" stroke-linecap="round" fill="none"/><circle cx="${x2}" cy="${y2}" r="6.5" fill="${PW}"/>`;
+  const L0=A(70,142,60,168), R0=A(112,142,122,168);
+  const Q=(x1,y1,cx,cy,x2,y2)=>`<path d="M${x1},${y1} Q${cx},${cy} ${x2},${y2}" stroke="${JK}" stroke-width="12" stroke-linecap="round" fill="none"/>`;
+  const phone=`<rect x="143" y="26" width="13" height="21" rx="3" fill="#263238"/><rect x="145" y="29" width="9" height="14" rx="1.5" fill="#9FD4FF"/><path d="M139,19 Q149.5,10 160,19" stroke="#8C96A0" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M143.5,22.5 Q149.5,17.5 155.5,22.5" stroke="#8C96A0" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  const ARMS={
+    down:L0+R0,
+    wave:L0+`<g class="fx-wave ${wave}">${A(112,142,136,106)}</g>`,
+    point:L0+A(112,142,130,102)+`<path d="M131,100 L135,89" stroke="${PW}" stroke-width="4.5" stroke-linecap="round"/>`,
+    up:A(70,142,44,106)+A(112,142,138,106),
+    chest:L0+A(112,142,97,151),
+    search:L0+Q(112,142,140,108,120,80)+`<ellipse cx="113" cy="76" rx="12" ry="5.5" transform="rotate(-8 113 76)" fill="${PW}"/>`,
+    phone:L0+`<g class="fx-phone">${phone}${Q(112,142,156,118,150,50)}<circle cx="150" cy="48" r="6.5" fill="${PW}"/></g>`
+  };
+  const BROWS={
+    worried:`<path d="M60,73 L78,66 M120,73 L102,66" stroke="${TIP}" stroke-width="3" stroke-linecap="round"/>`,
+    serious:`<path d="M61,67 L78,71 M119,67 L102,71" stroke="${TIP}" stroke-width="3" stroke-linecap="round"/>`,
+    focused:`<path d="M61,69 L78,70 M119,69 L102,70" stroke="${TIP}" stroke-width="2.6" stroke-linecap="round"/>`
+  };
+  const MOUTH={
+    happy:`<path d="M81,113 Q90,127 99,113 Z" fill="#7B2B22"/><path d="M85,119 Q90,124 95,119 Q90,116.5 85,119 Z" fill="#FF8A80"/>`,
+    calm:`<path d="M83,113 Q86.5,117.5 90,113 Q93.5,117.5 97,113" stroke="${DK}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
+    serious:`<path d="M84,115 Q90,117.5 96,115" stroke="${DK}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
+    focused:`<path d="M85,115 L95,115" stroke="${DK}" stroke-width="2.2" stroke-linecap="round"/>`,
+    worried:`<ellipse cx="90" cy="116" rx="3.2" ry="3.8" fill="#7B2B22"/>`
+  };
+  const eye=(cx)=>`<ellipse cx="${cx+lx}" cy="${88+ly}" rx="10" ry="12" fill="${DK}"/><circle cx="${cx+3+lx}" cy="${83+ly}" r="3.6" fill="#fff"/><circle cx="${cx-3+lx}" cy="${93+ly}" r="1.6" fill="#fff"/>`;
+  const eL=ears==='down'?' transform="rotate(-20 64 62)"':'', eR=ears==='down'?' transform="rotate(20 116 62)"':'';
+  const star=(x,y,s)=>`<path class="fx-spark" style="animation-delay:${(x%7)/10}s" d="M${x},${y-s} L${x+s*.3},${y-s*.3} L${x+s},${y} L${x+s*.3},${y+s*.3} L${x},${y+s} L${x-s*.3},${y+s*.3} L${x-s},${y} L${x-s*.3},${y-s*.3} Z" fill="${T.b}"/>`;
+  const sparks=sparkle?star(26,60,7)+star(160,40,6)+star(18,128,5)+star(170,150,5)+star(150,14,4):'';
+  return `<svg class="fox" viewBox="0 0 200 210" width="${size}" height="${Math.round(size*1.05)}" aria-hidden="true" focusable="false">
+  <defs><linearGradient id="${id}" x1="0" y1="1" x2=".6" y2="0"><stop offset="0" stop-color="${T.a}"/><stop offset="1" stop-color="${T.b}"/></linearGradient></defs>
+  <ellipse cx="92" cy="203" rx="48" ry="5" fill="rgba(20,40,50,.09)"/>
+  ${sparks}
+  <g class="fx-body">
+    <g class="fx-tail ${T.anim}" style="opacity:${T.op};filter:drop-shadow(0 0 7px ${T.glow})">
+      <path fill="url(#${id})" d="M110,176 C142,182 176,164 182,128 C186,104 178,84 166,70 C168,88 162,100 152,104 C158,86 150,66 136,58 C142,78 136,96 126,106 C118,116 112,132 108,150 Z"/>
+      <path fill="${T.c}" opacity=".85" d="M118,168 C140,170 162,156 166,132 C168,118 164,106 158,98 C156,112 148,120 140,122 C144,110 140,98 132,92 C132,108 126,120 120,130 C116,140 114,152 116,162 Z"/>
+    </g>
+    <rect x="72" y="168" width="17" height="26" rx="7" fill="${PW}"/><rect x="93" y="168" width="17" height="26" rx="7" fill="${PW}"/>
+    <ellipse cx="79" cy="196" rx="12" ry="6" fill="#3A2A24"/><ellipse cx="103" cy="196" rx="12" ry="6" fill="#3A2A24"/>
+    <path d="M60,178 C58,152 66,134 91,132 C116,134 124,152 122,178 Z" fill="${JK}"/>
+    <path d="M80,134 L91,168 L102,134 Z" fill="#F3E3CC"/>
+    <path d="M80,134 L88,162 M102,134 L94,162" stroke="${JKD}" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M86,143 h10 l-5,8 l5,8 h-10 l5,-8 z" fill="${T.b}" style="filter:drop-shadow(0 0 3px ${T.glow})"/>
+    <g${eL}><path d="M50,74 L44,20 L86,50 Z" fill="${O}"/><path d="M55,63 L51,33 L76,51 Z" fill="${IN}"/><path d="M44,20 L47,34 L57,29 Z" fill="${TIP}"/></g>
+    <g${eR}><path d="M130,74 L136,20 L94,50 Z" fill="${O}"/><path d="M125,63 L129,33 L104,51 Z" fill="${IN}"/><path d="M136,20 L133,34 L123,29 Z" fill="${TIP}"/></g>
+    <path d="M38,96 L23,111 L46,113 Z M142,96 L157,111 L134,113 Z" fill="${O}"/>
+    <path d="M36,94 C36,62 60,46 90,46 C120,46 144,62 144,94 C144,116 124,130 90,130 C56,130 36,116 36,94 Z" fill="${O}"/>
+    <path d="M54,106 C58,92 76,90 90,99 C104,90 122,92 126,106 C124,122 106,130 90,130 C74,130 56,122 54,106 Z" fill="${CR}"/>
+    <ellipse cx="59" cy="109" rx="7" ry="4" fill="#FF9A8A" opacity=".45"/><ellipse cx="121" cy="109" rx="7" ry="4" fill="#FF9A8A" opacity=".45"/>
+    <g class="fx-eyes">${eye(70)}${eye(110)}</g>
+    ${BROWS[mood]||''}
+    <ellipse cx="90" cy="105" rx="5.5" ry="4" fill="${DK}"/><ellipse cx="88.5" cy="103.6" rx="1.6" ry="1" fill="#fff" opacity=".7"/>
+    ${MOUTH[mood]||MOUTH.calm}
+    ${ARMS[arms]||ARMS.down}
+  </g>
+</svg>`;
+}
+document.querySelectorAll('.mini[data-fox]').forEach(el=>{el.innerHTML=fox(JSON.parse(el.dataset.fox),64)});
+
+/* ---------- shared bits ---------- */
+const I={
+  kb:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>',
+  qr:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><rect x="8" y="8" width="3" height="3"/><rect x="13" y="8" width="3" height="3"/><rect x="8" y="13" width="3" height="3"/><path d="M13 13h3v3"/></svg>',
+  chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+  target:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
+  run:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="4.5" r="1.8"/><path d="M8 21l3-6 3 2v4M6 12l3-4 4 1 3 4 3 1M11 15l2-6"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+  batt:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linejoin="round"><rect x="7.5" y="4.5" width="9" height="16" rx="2"/><path d="M10.5 2.5h3" stroke-linecap="round"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linejoin="round"><path d="M12 3l7.5 3v5.5c0 4.7-3.2 8-7.5 9.5-4.3-1.5-7.5-4.8-7.5-9.5V6z"/></svg>',
+  ok:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 10"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c1-3.5 3.8-5 7-5s6 1.5 7 5"/></svg>',
+  bigok:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 10"/></svg>'
+};
+const SB='<div class="sb"><span>12:30</span><svg viewBox="0 0 46 11" fill="#1B1F24"><rect x="0" y="7" width="2.4" height="4" rx=".6"/><rect x="3.8" y="5" width="2.4" height="6" rx=".6"/><rect x="7.6" y="2.5" width="2.4" height="8.5" rx=".6"/><path d="M20 10.5l-5.5-5.8a7.8 7.8 0 0 1 11 0z"/><rect x="36" y="1" width="6" height="10" rx="1.2"/><rect x="38" y="0" width="2" height="1.2"/></svg></div>';
+const BAR='<div class="bar"><i></i></div>';
+
+/* ---------- prototype 1: onboarding ---------- */
+const PERMS=[
+  {n:'07',ic:'pin',h:'Нужен доступ к геолокации',tx:'С ним родители видят, где ребёнок, и меньше волнуются',btn:'Разрешить',
+   mock:'<div class="row c hl">При использовании приложения</div><div class="row c">Только в этот раз</div><div class="row c">Отклонить</div>',top:[282,392]},
+  {n:'08',ic:'target',h:'Нужен доступ к геолокации в фоне',tx:'Тогда локация обновляется, даже когда приложение свёрнуто',btn:'Открыть настройки',
+   mock:'<div class="hd">Разрешение «Местоположение»</div><div class="row hl">Разрешить в любом режиме</div><div class="row">Разрешить только при использовании</div><div class="row">Не разрешать</div>',top:[282,300]},
+  {n:'09',ic:'run',h:'Нужен доступ к физической активности',tx:'Пока телефон на месте, GPS отдыхает — заряда хватает дольше',btn:'Разрешить',
+   mock:'<div class="sk"></div><div class="sk s"></div><div class="row c hl">Разрешить</div><div class="sk s"></div>',top:[282,392]},
+  {n:'10',ic:'bell',h:'Нужен доступ к уведомлениям',tx:'С ними видно, что связь работает и что сигнал SOS дошёл',btn:'Разрешить',
+   mock:'<div class="sk"></div><div class="sk s"></div><div class="row c hl">Разрешить</div><div class="sk s"></div>',top:[282,392]},
+  {n:'11',ic:'clock',h:'Нужен доступ к будильникам и напоминаниям',tx:'Если система выключит приложение, будильник включит его обратно — и связь с родителями не оборвётся',btn:'Открыть настройки',
+   mock:'<div class="hd">Будильники и напоминания</div><div class="row hl tg"><span>Fendee</span><i></i></div><div class="sk s"></div>',top:[330,470]},
+  {n:'12',ic:'batt',h:'Нужна работа в фоне',tx:'Android усыпляет приложения в фоне, и телефон пропадает у родителей с карты. Настройка это отключает, на заряде почти не сказывается.',btn:'Разрешить',
+   mock:'<div class="sk"></div><div class="sk s"></div><div class="split"><div>Запретить</div><div class="hl" style="background:#BFE7EA;color:#0A4F57;font-weight:500">Разрешить</div></div><div class="sk s"></div>',top:[330,470]}
+];
+const ONB=[
+  {key:'join',chip:'02 Знакомство'},
+  {key:'conn',chip:'05 Подключён'},
+  {key:'disc',chip:'06 Раскрытие'},
+  ...PERMS.map((p,i)=>({key:'perm',i,chip:i===0?'07–12 Разрешения':null})),
+  {key:'done',chip:'13 Готово'}
+];
+const ONB_CAP={
+  join:['02 · Знакомство','P1','Fendi машет и в одной фразе говорит, что сейчас будет. Стоит в пустой нижней части экрана под карточками, ничего не перекрывает. Тап по карточке — дальше.'],
+  conn:['05 · Телефон подключён','P1','Галочку заменяет Fendi. Прыгает от радости, хвост вспыхивает. Реплики нет — хватает заголовка.'],
+  disc:['06 · Раскрытие информации','P1','Fendi маленький и молчит. Текст раскрытия требует Google Play: персонаж его не пересказывает и не отвлекает от него.'],
+  perm:['07–12 · Разрешения','P1','Под макетом системного окна Fendi показывает лапой на подсвеченный пункт — туда нужно нажать. На всех шести экранах одна поза. Аксессуары по смыслу (метка, рюкзак, колокольчик…) — P2. «Не сейчас» — без грусти и уговоров.'],
+  done:['13 · Настройка завершена','P1','Вместо иллюстрации с детьми — празднующий Fendi, хвост на максимуме. Реплика «Я на связи!» — по желанию. «Продолжить» ведёт на главный экран во втором прототипе.']
+};
+let onbIdx=0;
+function renderOnb(){
+  const s=ONB[onbIdx], el=document.getElementById('onb'); let h='';
+  if(s.key==='join'){
+    h=`<div class="ttl-l">Присоединиться</div>
+    <button class="opt" style="top:88px" data-next><span class="ic">${I.kb}</span><span><b>Ввести код</b><span>6-значный код</span></span>${I.chev}</button>
+    <button class="opt" style="top:176px" data-next><span class="ic">${I.qr}</span><span><b>Отсканировать QR</b><span>Наведите камеру на код на другом телефоне</span></span>${I.chev}</button>
+    <div class="bub dn" style="left:40px;right:40px;top:372px;--ax:120px">Привет! Я Фенди. Давай подключим твой телефон к маме или папе</div>
+    <div class="fz" style="left:0;right:0;top:466px">${fox({mood:'happy',arms:'wave',wave:'often'},190)}</div>`;
+  }else if(s.key==='conn'){
+    h=`<div class="fz" style="left:0;right:0;top:92px">${fox({mood:'happy',arms:'up',sparkle:true,tail:'bright'},210).replace('class="fox"','class="fox jump"')}</div>
+    <div class="h" style="top:338px">Телефон подключён!</div>
+    <div class="tx" style="top:382px">Осталось дать несколько разрешений — без них связь с родителями не заработает</div>
+    <button class="btn purple" style="bottom:52px" data-next>Настроить доступы</button>`;
+  }else if(s.key==='disc'){
+    h=`<div class="ico" style="top:64px">${I.shield}</div>
+    <div class="h" style="top:134px">Что приложение собирает</div>
+    <div class="tx" style="top:176px">Приложение собирает данные о местоположении в фоновом режиме — даже когда закрыто или не используется — и передаёт их родителям для безопасности ребёнка.<br><br>Датчики движения — чтобы экономить заряд.</div>
+    <div class="fz" style="left:0;right:0;top:470px">${fox({mood:'calm',arms:'down'},120)}</div>
+    <button class="btn" style="bottom:96px" data-next>Продолжить</button>
+    <button class="lnk" style="bottom:58px" data-next>Не сейчас</button>`;
+  }else if(s.key==='perm'){
+    const p=PERMS[s.i];
+    const prog=Array.from({length:6},(_,k)=>`<i class="${k<=s.i?'f':''}"></i>`).join('');
+    const mockTop=s.i>=4?300:252;
+    h=`<div class="prog">${prog}</div>
+    <div class="ico" style="top:72px">${I[p.ic]}</div>
+    <div class="h" style="top:140px;${p.h.length>34?'font-size:18px':''}">${p.h}</div>
+    <div class="tx" style="top:${p.h.length>34?200:186}px;font-size:${p.tx.length>100?13.5:14.5}px">${p.tx}</div>
+    <div class="mock" style="top:${mockTop}px">${p.mock}</div>
+    <div class="fz" style="left:36px;top:${s.i>=4?468:438}px">${fox({mood:s.i%2?'calm':'happy',arms:'point'},s.i>=4?128:150)}</div>
+    <button class="btn" style="bottom:96px" data-next>${p.btn}</button>
+    <button class="lnk" style="bottom:58px" data-next>Не сейчас</button>`;
+  }else if(s.key==='done'){
+    const prog=Array.from({length:6},()=>'<i class="f"></i>').join('');
+    h=`<div class="prog">${prog}</div>
+    <div class="ico" style="top:72px">${I.ok}</div>
+    <div class="h" style="top:140px">Всё готово</div>
+    <div class="tx" style="top:180px">Телефон подключён. Родители видят, что связь работает.</div>
+    <div class="bub dn" style="left:236px;top:268px;--ax:18px">Я на связи!</div>
+    <div class="fz" style="left:0;right:0;top:300px">${fox({mood:'happy',arms:'up',sparkle:true,tail:'bright'},230).replace('class="fox"','class="fox jump"')}</div>
+    <button class="btn" style="bottom:52px" data-finish>Продолжить</button>`;
+  }
+  el.innerHTML=SB+`<div class="scr">${h}</div>`+BAR;
+  el.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{onbIdx=Math.min(onbIdx+1,ONB.length-1);renderOnb()}));
+  const fin=el.querySelector('[data-finish]');
+  if(fin)fin.addEventListener('click',()=>{setMain('on');document.getElementById('mainFit').scrollIntoView({behavior:'smooth',block:'center'})});
+  const c=ONB_CAP[s.key];
+  document.getElementById('onbCap').innerHTML=`<span class="tag p1 prio">${c[1]}</span><b>${c[0]}${s.key==='perm'?' · '+PERMS[s.i].n:''}</b>${c[2]}`;
+  document.querySelectorAll('#onbChips .chip').forEach(ch=>{
+    const t=+ch.dataset.i, on= s.key==='perm' ? ONB[t].key==='perm' : t===onbIdx;
+    ch.setAttribute('aria-pressed',on?'true':'false');
+  });
+}
+document.getElementById('onbChips').innerHTML=ONB.map((s,i)=>s.chip?`<button class="chip" data-i="${i}">${s.chip}</button>`:'').join('');
+document.querySelectorAll('#onbChips .chip').forEach(ch=>ch.addEventListener('click',()=>{onbIdx=+ch.dataset.i;renderOnb()}));
+
+/* ---------- prototype 2: main screen ---------- */
+const MAIN={
+  on:     {chip:'На связи',     lbl:'Держи 3 секунды',   dot:'#34C759',t:'Ты на связи',     s:'Мама и папа видят, что ты в порядке', f:{mood:'calm',arms:'wave',tail:'full'},
+           cap:['F-05 · Хвост: полный тёплый огонь','Спокойная улыбка, изредка машет. Дышит, моргает, хвост мерцает. Всё внимание — на кнопке.']},
+  sent:   {chip:'Сигнал отправлен',lbl:'Отправлено в 12:30',dot:'#E84742',t:'Сигнал отправлен',s:'Родители уже знают, где ты', f:{mood:'serious',arms:'chest',tail:'bright'},check:true,
+           cap:['F-06 · Хвост: яркий, ровный','Собран, лапа на груди — «я рядом». Никакой радости и конфетти, хвост не мерцает, реакций на тап нет.']},
+  nogeo:  {chip:'Не видно',     lbl:'Держи 3 секунды',   dot:'#FF9F0A',t:'Тебя не видно',   s:'Геолокация выключена', f:{mood:'worried',arms:'search',tail:'dim',look:[3,0]},
+           cap:['F-07 · Хвост: тусклый, полупрозрачный','Лапа козырьком, ищет взглядом. Хвост медленно гаснет — родители его «не видят».']},
+  offline:{chip:'Нет связи',    lbl:'Держи 3 секунды',   dot:'#8E8E93',t:'Нет связи',       s:'Родители видят твоё последнее место', f:{mood:'focused',arms:'phone',tail:'cold',look:[2,-3]},
+           cap:['F-08 · Хвост: холодный голубой','Поднял телефон и ловит сеть. Не спит: спящий лисёнок читался бы как «всё выключено, можно не волноваться».']},
+  lost:   {chip:'Не на связи',  lbl:'Держи 3 секунды',   dot:'#E84742',t:'Ты не на связи',  s:'Родители не видят, где ты', f:{mood:'worried',arms:'down',tail:'off',ears:'down'},
+           cap:['F-09 · Хвост: погасший серый','Встревожен, уши прижаты. Без анимации — самое «тихое» состояние экрана.']}
+};
+let mainState='on', holdRaf=null, holdStart=0;
+function setMain(k){mainState=k;renderMain()}
+function renderMain(focus){
+  const m=MAIN[mainState], el=document.getElementById('main');
+  const f=focus?{...m.f,mood:'serious',arms:'down',tail:m.f.tail==='full'?'bright':m.f.tail}:m.f;
+  el.innerHTML=SB+`<div class="scr" style="animation:none">
+    <div class="ava">${I.user}</div>
+    <div class="lbl">${m.lbl}</div>
+    <div class="sos"><div class="pr"></div><button aria-label="SOS: удерживайте 3 секунды">${m.check?I.bigok:'SOS'}</button></div>
+    <div class="fz" style="left:0;right:0;top:436px">${fox(f,236)}</div>
+    <div class="stc" style="--dot:${m.dot}"><b><i></i>${m.t}</b><span>${m.s}</span></div>
+  </div>`+BAR;
+  const btn=el.querySelector('.sos button'), ring=el.querySelector('.sos');
+  const stop=()=>{if(holdRaf){cancelAnimationFrame(holdRaf);holdRaf=null;ring.style.setProperty('--p',0);renderMain()}};
+  btn.addEventListener('pointerdown',e=>{
+    if(mainState==='sent')return;
+    e.preventDefault();btn.setPointerCapture&&btn.setPointerCapture(e.pointerId);
+    holdStart=performance.now();
+    const fz=el.querySelector('.fz');fz.innerHTML=fox({...m.f,mood:'serious',arms:'down',tail:m.f.tail==='full'?'bright':m.f.tail},236);
+    const tick=t=>{const p=Math.min(1,(t-holdStart)/3000);ring.style.setProperty('--p',p);
+      if(p>=1){holdRaf=null;navigator.vibrate&&navigator.vibrate(180);setMain('sent');return}
+      holdRaf=requestAnimationFrame(tick)};
+    holdRaf=requestAnimationFrame(tick);
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>btn.addEventListener(ev,stop));
+  document.getElementById('mainCap').innerHTML=`<b>${m.t} · ${m.cap[0]}</b>${m.cap[1]}`;
+  document.querySelectorAll('#mainChips .chip').forEach(ch=>ch.setAttribute('aria-pressed',ch.dataset.k===mainState?'true':'false'));
+}
+document.getElementById('mainChips').innerHTML=Object.entries(MAIN).map(([k,v])=>`<button class="chip" data-k="${k}">${v.chip}</button>`).join('');
+document.querySelectorAll('#mainChips .chip').forEach(ch=>ch.addEventListener('click',()=>setMain(ch.dataset.k)));
+
+/* ---------- fit phones to column width ---------- */
+function fit(){document.querySelectorAll('.fit').forEach(w=>{const s=Math.min(1,w.clientWidth/380);const d=w.querySelector('.device');d.style.transform=`scale(${s})`;w.style.height=(820*s)+'px'})}
+window.addEventListener('resize',fit);
+renderOnb();renderMain();fit();
+</script>
+</body>
+</html>
